@@ -16,7 +16,7 @@ messagesToDelete = {
 
 }
 
-bot = telebot.TeleBot(token='7358147400:AAEfVlqMBq3zcl4Hm3ug3c5q4MHVmMVW9m8')
+bot = telebot.TeleBot(token='TG token')
 #id username course school group sub 
 
 def findUsersWithTheSameSchedule(users) -> dict:
