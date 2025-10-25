@@ -6,6 +6,9 @@ import pandas as pd
 from schoolsXpathes import findSchoolXPatch
 import datetime
 from dbmanager import *
+# from indexTelegram import send_to_logger
+def send_to_logger(e):
+    pass
 daysOfWeek = ['Понедельник' , "Вторник" , "Среда" , "Четверг" , "Пятница" , "Понедельник"]
 
 def getSpecificDay(data , dayIndex = 0):
@@ -61,18 +64,26 @@ def webside(day_index = 0 , group = "4А52" , optionsOn = True , school = 'ИШ�
         
 
         #Парсинг
-        driver = webdriver.Chrome(options= options)
-        driver.get('https://ro-rasp.tpu.ru/')
-        driver.find_element(By.XPATH , str(findSchoolXPatch(school=school))).click()
-        sleep(2)
-        driver.find_element(By.XPATH, f"//*[contains(text(), '{course} курс')]").click()
-        sleep(2)
-        driver.find_element(By.XPATH, f"//*[contains(text(), '{group.upper()}')]").click()
-        speciality = driver.find_element(By.XPATH , '/html/body/div[2]/div/div/div[2]/div[1]/div[2]/div/div[1]/div[2]/ul/li[1]/a').text
-        schedule = driver.find_element(By.XPATH , '/html/body/div[2]/div/div/div[2]/div[3]/table')
-        rows = schedule.find_elements(By.TAG_NAME, 'tr')
+        try:
+            driver = webdriver.Chrome(options= options)
+            driver.get('https://ro-rasp.tpu.ru/')
+        except Exception as e:
+            return f"К сожалению , сейчас невозможно получить информацию с сайта ТПУ😰" , False
 
-        #Сортировка данных 
+        try:
+            driver.find_element(By.XPATH , str(findSchoolXPatch(school=school))).click()
+            sleep(2)
+            driver.find_element(By.XPATH, f"//*[contains(text(), '{course} курс')]").click()
+            sleep(2)
+            driver.find_element(By.XPATH, f"//*[contains(text(), '{group.upper()}')]").click()
+            speciality = driver.find_element(By.XPATH , '/html/body/div[2]/div/div/div[2]/div[1]/div[2]/div/div[1]/div[2]/ul/li[1]/a').text
+            schedule = driver.find_element(By.XPATH , '/html/body/div[2]/div/div/div[2]/div[3]/table')
+            rows = schedule.find_elements(By.TAG_NAME, 'tr')
+        except Exception as e:
+            return "Вы ввели неправильные данные при регистрации. Свои данные вы можете просмотреть командой /profile , или пройти повторную регестрацию коммандой /start" , False
+
+
+        #Сортировка данных
         data = []
         for row in rows:
             cells = row.find_elements(By.TAG_NAME, 'td')
@@ -97,23 +108,17 @@ def webside(day_index = 0 , group = "4А52" , optionsOn = True , school = 'ИШ�
             to_return += '\n'
         driver.quit()
 
-        return to_return
+        return to_return , True
     except Exception as e:
         try:
             driver.quit()
         except:
             pass
         try:
-            e = str(e).split('\n')[0] 
+            e = str(e).split('\n')[0]
         except: 
             pass
-        return f'Либо лег сайт , либо вы ввели неправильные данные при регистрации. Свои данные вы можете просмотреть командой /profile , или пройти повторную регестрацию коммандой /start\n(Ошибка - {e})'
+        return f'Скорее всего произошла независящая от ваш ошибка , вы можете написать автору и уточнить это. (Ошибка - {e})' , False
 if __name__ == "__main__":
-    dayOfWeek = int(input("Введите индекс дня недели (понедельник - 0 , суббота - 5):"))
-    g = input("Введите свою школу:")
-    gr = input("Введите свою группу:")
-    print("Гружу расписание...")
-    print(webside(day_index= dayOfWeek , optionsOn= True , school= g , group= gr))
-    # a = [['asd'] , ['asd'] , [''] , [''] , [''] , ['asd'] , [''] , ['']]
-    # print(isBackPairs(2 , a))
-    # print(isNextPairs(6 , a))
+    #место для проверки функций
+    pass
