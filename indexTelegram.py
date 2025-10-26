@@ -15,7 +15,7 @@ daysOfWeek = {
     "rus" : ['понедельник' , "вторник" , "среда" , "четверг" , "пятница" , "суббота"] ,
     "eng" : ["monday" , "tuesday" , "wednesday" , "thursday" , "friday" , "saturday"]
     }
-checkFrequency = 10 #проверка / минуты
+checkFrequency = 10 #проверка/минуты
 messagesToDelete = {
 
 }
