@@ -259,7 +259,7 @@ def telegramSide():
                 bot.send_message(message.from_user.id , "Такого дня нет!")
                 return
             dayIndex = eng if eng != None else rus
-            sche = webside(day_index= dayIndex , id = message.from_user.id)
+            sche = webside(day_index= dayIndex , id = message.from_user.id , wId= True)
             if not sche[1]:
                 send_to_logger(sche[0] , isntanexeption = True , id = message.from_user.id)
             bot.send_message(message.from_user.id , sche[0])
@@ -285,7 +285,7 @@ def distributionSide():
                     b(f'Расписание для {school} , {course} курс , группа {group}: ')
                     for user in same_groups[users]:
                         g('Отправленно расписание для ' + str(user))
-                    # bot.send_message(user , f'Расписание для {school} , {course} курс , группа {group}:\n\n{schedule}')
+                    bot.send_message(user , f'Расписание для {school} , {course} курс , группа {group}:\n\n{schedule}')
             time.sleep(60 * checkFrequency)
         except Exception as e:
             send_to_logger(e)
