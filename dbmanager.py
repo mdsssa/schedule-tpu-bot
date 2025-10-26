@@ -133,11 +133,5 @@ def getUserProfile(id , username , firstname):
         r(f'Произошла ошибка {e} при получении профиля пользователя {id}')
         return r(f'Произошла ошибка {e} при получении профиля')
 if __name__ == '__main__':
-    # db = sql.connect(stPatch)
-    # cursor = db.cursor()
-    # cursor.execute("CREATE TABLE date (date integer)")
-    # db.commit() #5822968635
-    # db.close()
-    # registrate_user(5822968635 , "spitinmyfaceivegonemad" , 1 , 'ишнпт' , "4а52" , True)
-
+    #место для проверки функций
     pass
