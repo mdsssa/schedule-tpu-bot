@@ -9,6 +9,8 @@ from threading import Thread
 import time
 import dotenv
 import string
+import sys
+import traceback
 daysOfWeek = {
     "rus" : ['понедельник' , "вторник" , "среда" , "четверг" , "пятница" , "суббота"] ,
     "eng" : ["monday" , "tuesday" , "wednesday" , "thursday" , "friday" , "saturday"]
@@ -23,9 +25,21 @@ loggerChat = dotenv.dotenv_values('.env').get('LOG_GROUP')
 
 bot = telebot.TeleBot(token= token)
 #id username course school group sub 
-def send_to_logger(ex):
+def send_to_logger(ex , id = 0 , isntanexeption = False):
     try:
-        bot.send_message(chat_id = loggerChat, text=f'Произошла ошибка :{ex}')
+        if id == 0:
+            message = f'Произошла ошибка :{ex}'
+        else:
+            message = f'У пользователя {id} произошла ошибка :  {ex}'
+        if not isntanexeption:
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            tb_list = traceback.extract_tb(exc_traceback)
+            last_frame = tb_list[-1]
+            file_name = last_frame.filename
+            line_number = last_frame.lineno
+            function_name = last_frame.name
+            message = f'{message}\nОшибка {exc_type.__name__}\nНа строке {line_number} ,в функции {function_name} файла {file_name} '
+        bot.send_message(chat_id = loggerChat, text=f'{message}')
     except Exception as e:
         print(e)
 
@@ -86,7 +100,7 @@ def telegramSide():
             else:
                 messagesToDelete[f'{id}'] = messagesToDelete[f'{id}'].append(messageId)
         except Exception as e:
-            send_to_logger(e)
+            send_to_logger(e , id)
     def gen_school_markup():
         try:
             markup = InlineKeyboardMarkup()
@@ -116,7 +130,7 @@ def telegramSide():
             bot.send_message(message.chat.id, 'Выберите ваш курс:', reply_markup=gen_course_markup())
             # manageMesages(id = message.from_user.id , messageId= message.id + 1)
         except Exception as e:
-            send_to_logger(e)
+            send_to_logger(e , message.from_user.id)
 
 
 
@@ -126,7 +140,7 @@ def telegramSide():
         # manageMesages(id = message.from_user.id , messageId= message.id + 1)
             bot.send_message(message.from_user.id , "Выберете день недели:" , reply_markup= genWeekMarkup())
         except Exception as e:
-            send_to_logger(e)
+            send_to_logger(e , message.from_user.id)
     @bot.callback_query_handler(func=lambda call: True)
     def callback_handler(call):
         try:
@@ -151,11 +165,11 @@ def telegramSide():
                 dayIndex = int(data.split("_")[1])
                 sche = webside(day_index= dayIndex , wId= True , id = call.message.chat.id)
                 if not sche[1]:
-                    send_to_logger(sche[0])
+                    send_to_logger(sche[0] , isntanexeption = True , id = call.message.chat.id)
                 # deleteMessages(chatId= call.message.chat.id , id = call.message.chat.id)
                 bot.send_message(call.message.chat.id , sche[0])
         except Exception as e:
-            send_to_logger(e)
+            send_to_logger(e , call.message.from_user.id)
     def handle_group_input(message, user_id):
         group = message.text.strip()
         if not group:
@@ -176,7 +190,7 @@ def telegramSide():
             bot.send_message(message.chat.id , result)
         except Exception as e:
             try:
-                send_to_logger(e)
+                send_to_logger(e , message.from_user.id)
                 bot.send_message(message.chat.id, f'Ошибка при регистрации: {e}')
             except Exception as e:
                 pass
@@ -190,14 +204,13 @@ def telegramSide():
         try:
             if not checkUserSub(message.from_user.id):
                 user_id = message.from_user.id
-                username = message.from_user.username
                 updateUserSub(user_id, True)
                 bot.send_message(message.chat.id, 'Вы подписались на рассылку расписания!')
             else:
                 bot.send_message(message.chat.id, 'Вы и так были подписанны!')
         except Exception as e:
             bot.send_message(message.chat.id, f'Произошла ошибка при подписке: {e}')
-            send_to_logger(e)
+            send_to_logger(e , message.from_user.id)
 
 
     @bot.message_handler(commands=['unsubscribe' , 'unsub' , 'отписаться'])
@@ -211,17 +224,18 @@ def telegramSide():
                 bot.send_message(message.chat.id, 'Вы не были подписаны на рассылку расписания.')
         except Exception as e:
             bot.send_message(message.chat.id, f'Произошла ошибка при отписке: {e}')
-            send_to_logger(e)
+            send_to_logger(e , message.from_user.id)
     @bot.message_handler(commands= ['delete'])
 
 
     def deleteHandler(message) -> None:
         try:
+            findUsersWithTheSameSchedule()
             deleteUser(message.from_user.id)
             bot.send_message(message.from_user.id , 'Ваш профиль удален')
         except Exception as e:
             bot.send_message(message.from_user.id , 'Ошибка при удалении профиля')
-            send_to_logger(e)
+            send_to_logger(e , message.from_user.id)
     @bot.message_handler(commands= ['profile'])
     def profileHandler(message:telebot) -> None:
         bot.send_message(message.from_user.id , getUserProfile(id = message.from_user.id , username= message.from_user.username , firstname= message.from_user.first_name))
@@ -237,7 +251,7 @@ def telegramSide():
                         return i
                 return None
             except Exception as e:
-                send_to_logger(e)
+                send_to_logger(e , message.from_user.id)
         rus = getDayIndex(daysOfWeek["rus"] , message.text.replace('/' , ''))
         eng = getDayIndex(daysOfWeek["eng"] , message.text.replace('/' , ''))
         try:
@@ -247,10 +261,10 @@ def telegramSide():
             dayIndex = eng if eng != None else rus
             sche = webside(day_index= dayIndex , id = message.from_user.id)
             if not sche[1]:
-                send_to_logger(sche[0])
+                send_to_logger(sche[0] , isntanexeption = True , id = message.from_user.id)
             bot.send_message(message.from_user.id , sche[0])
         except Exception as e:
-            send_to_logger(e)
+            send_to_logger(e , message.from_user.id)
     bot.infinity_polling()
     
     
@@ -267,7 +281,7 @@ def distributionSide():
                     schedule = webside(day_index = datetime.now().weekday() if datetime.weekday != 6 else 0
                                         ,  group = group , school= school , course= int(course) , optionsOn= True)
                     if not schedule[1]:
-                        send_to_logger(schedule[0])
+                        send_to_logger(schedule[0] , isntanexeption = True , id = users.id)
                     b(f'Расписание для {school} , {course} курс , группа {group}: ')
                     for user in same_groups[users]:
                         g('Отправленно расписание для ' + str(user))

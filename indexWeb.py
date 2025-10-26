@@ -2,7 +2,6 @@ from selenium import common
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from time import sleep
-import pandas as pd
 from schoolsXpathes import findSchoolXPatch
 import datetime
 from dbmanager import *
@@ -38,11 +37,6 @@ def isBackPairs(index , element):
                 pass
         return False
 
-
-def makeMarcDownTable(data):
-    table_df = pd.DataFrame(data)
-    markdown_table = table_df.to_markdown(index=False)
-    return markdown_table
 
 
 def webside(day_index = 0 , group = "4А52" , optionsOn = True , school = 'ИШНПТ' , course = 1 , wId = False , id = None):
