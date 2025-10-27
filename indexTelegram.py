@@ -23,6 +23,13 @@ token = dotenv.dotenv_values('.env').get('TOKEN')
 loggerChat = dotenv.dotenv_values('.env').get('LOG_GROUP')
 
 
+menulayout = {"Профиль" : 'profile' ,
+              "Друзья" : 'friends' ,
+              "Расписание": 'schedule' ,
+                }
+profileLa = {
+
+}
 bot = telebot.TeleBot(token= token)
 #id username course school group sub 
 def send_to_logger(ex , id = 0 , isntanexeption = False):
@@ -42,7 +49,17 @@ def send_to_logger(ex , id = 0 , isntanexeption = False):
         bot.send_message(chat_id = loggerChat, text=f'{message}')
     except Exception as e:
         print(e)
-
+def makeMarkupWithLayout(layout:dict):
+    try:
+        markup = InlineKeyboardMarkup()
+        markup.row_width = 2
+        for i in layout:
+            markup.add(InlineKeyboardButton(i, callback_data=f"{menulayout[i]}"))
+        return markup
+    except Exception as e:
+        send_to_logger(e)
+def generateMenu():
+    return makeMarkupWithLayout(menulayout)
 
 def findUsersWithTheSameSchedule(users) -> dict:
     try:
@@ -138,7 +155,7 @@ def telegramSide():
     def weekHandler(message):
         try:
         # manageMesages(id = message.from_user.id , messageId= message.id + 1)
-            bot.send_message(message.from_user.id , "Выберете день недели:" , reply_markup= genWeekMarkup())
+            bot.send_message(message.from_user.id , "Выберите день недели:" , reply_markup= genWeekMarkup())
         except Exception as e:
             send_to_logger(e , message.from_user.id)
     @bot.callback_query_handler(func=lambda call: True)
@@ -168,6 +185,14 @@ def telegramSide():
                     send_to_logger(sche[0] , isntanexeption = True , id = call.message.chat.id)
                 # deleteMessages(chatId= call.message.chat.id , id = call.message.chat.id)
                 bot.send_message(call.message.chat.id , sche[0])
+            elif data == 'schedule':
+                try:
+                    # manageMesages(id = message.from_user.id , messageId= message.id + 1)
+                    bot.send_message(call.message.chat.id, "Выберите день недели:", reply_markup=genWeekMarkup())
+                except Exception as e:
+                    send_to_logger(e, call.message.chat.id)
+            elif data == 'progifile':
+                pass
         except Exception as e:
             send_to_logger(e , call.message.from_user.id)
     def handle_group_input(message, user_id):
@@ -238,10 +263,14 @@ def telegramSide():
             send_to_logger(e , message.from_user.id)
     @bot.message_handler(commands= ['profile'])
     def profileHandler(message:telebot) -> None:
-        bot.send_message(message.from_user.id , getUserProfile(id = message.from_user.id , username= message.from_user.username , firstname= message.from_user.first_name))
+        try:
+            bot.send_message(message.from_user.id , getUserProfile(id = message.from_user.id , username= message.from_user.username , firstname= message.from_user.first_name) )
+        except Exception as e:
+            send_to_logger(e , message.from_user.id)
 
-
-
+    @bot.message_handler(commands= ['menu'])
+    def menu(message:telebot) -> None:
+        bot.send_message(message.from_user.id , text = getUserProfile(message.from_user.id , message.from_user.username , firstname= message.from_user.first_name ), reply_markup= generateMenu())
     @bot.message_handler(commands= daysOfWeek["rus"] + daysOfWeek["eng"])    
     def LastHandler(message) -> None:
         def getDayIndex(list_ , element) -> int:
