@@ -35,7 +35,7 @@ def getUserInfo(id):
         db.close()
         return a
     except Exception as e:
-        r(f"При проверке подписки пользователя произошла ошибка: {e}")
+        r(f"{e}")
 def getAllSubscribedUsers() -> list:
     try:
         db = sql.connect(stPatch)
@@ -123,7 +123,7 @@ def getUserProfile(id , username , firstname):
             cursor = db.cursor()
             info = cursor.execute(f'SELECT * FROM users WHERE id = {id}')
             info = info.fetchone()
-            db.close
+            db.close()
             return f'''{firstname} , @{username}
 {"Вы подписанны на рассылку📬" if bool(info[-1]) else "Вы не подписанны на рассылку📭"}
 Курс - {info[2]}
