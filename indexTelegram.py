@@ -187,7 +187,7 @@ def telegramSide():
                 bot.send_message(call.message.chat.id , sche[0])
             elif data == 'schedule':
                 try:
-                    # manageMesages(id = message.from_user.id , messageId= message.id + 1)
+                    # manageMesages(id = message.from_user.id , messageId= message.id + 1)'
                     bot.send_message(call.message.chat.id, "Выберите день недели:", reply_markup=genWeekMarkup())
                 except Exception as e:
                     send_to_logger(e, call.message.chat.id)
