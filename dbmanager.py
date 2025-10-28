@@ -1,5 +1,6 @@
 import sqlite3 as sql
 from colorama import Fore
+import os
 #id username course school group sub 
 stPatch = './info.db'
 def r(text):
@@ -8,6 +9,20 @@ def g(text):
     print(f'{Fore.GREEN}{text}{Fore.RESET}')
 def b(text):
     print(f'{Fore.BLUE}{text}{Fore.RESET}')
+tables = {
+    'date' : '(date integer)' ,
+    'users' : "(id integer , username string , course integer , school string , 'group' string , sub integer)" ,
+    'friendsList' : "(id integer , friendName string , friendcourse integer , friendschool string ,'group' string)"
+}
+def makeDb():
+    try:
+        for table in tables:
+            db = sql.connect(stPatch)
+            db.cursor().execute(f'CREATE TABLE IF NOT EXISTS {table} {tables[table]};')
+            db.commit()
+            db.close()
+    except Exception as e:
+        print(e)
 def DateManager(datenow:int = 0) -> int:
     try:
         db = sql.connect(stPatch)
@@ -132,6 +147,21 @@ def getUserProfile(id , username , firstname):
     except Exception as e:
         r(f'Произошла ошибка {e} при получении профиля пользователя {id}')
         return r(f'Произошла ошибка {e} при получении профиля')
+def getfriends(id):
+    try:
+        db = sql.connect(stPatch)
+        cursor = db.cursor()
+        info = cursor.execute(f'SELECT * FROM friendsList WHERE id = {id}')
+        info = info.fetchall()
+        db.close()
+        return info
+    except Exception as e:
+        print(e)
+def addFriends(id , course , school ):
+    try:
+        pass
+    except Exception as e:
+        pass
 if __name__ == '__main__':
-    #место для проверки функций
-    pass
+    makeDb()
+

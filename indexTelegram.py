@@ -11,17 +11,21 @@ import dotenv
 import string
 import sys
 import traceback
+FriendRegistration = {
+
+}
 daysOfWeek = {
     "rus" : ['понедельник' , "вторник" , "среда" , "четверг" , "пятница" , "суббота"] ,
     "eng" : ["monday" , "tuesday" , "wednesday" , "thursday" , "friday" , "saturday"]
     }
+
 checkFrequency = 10 #проверка/минуты
 messagesToDelete = {
 
 }
 token = dotenv.dotenv_values('.env').get('TOKEN')
 loggerChat = dotenv.dotenv_values('.env').get('LOG_GROUP')
-
+friendsCount = dotenv.dotenv_values('.env').get('MAX_FRIENDS')
 
 menulayout = {"Профиль" : 'profile' ,
               "Друзья" : 'friends' ,
@@ -118,6 +122,19 @@ def telegramSide():
                 messagesToDelete[f'{id}'] = messagesToDelete[f'{id}'].append(messageId)
         except Exception as e:
             send_to_logger(e , id)
+    def gen_friends_markup(id):
+        markup = InlineKeyboardMarkup()
+        markup.row_width = 2
+        try:
+            friends = getfriends(id)
+            if not len(friends) == 0:
+                for i in friends:
+                    markup.add(InlineKeyboardButton(f'{friends[i][1]} , {friends[i][-1]}', callback_data=f"{id}_friend_{friends[i][-1]}"))
+                markup.add(InlineKeyboardButton("Удалить друга" , callback_data=f"{id}_friend_delete"))
+            markup.add(InlineKeyboardButton("Добавить друга" , callback_data=f"{id}_friend_add"))
+            return markup , len(friends)
+        except Exception as e:
+            send_to_logger(e , id)
     def gen_school_markup():
         try:
             markup = InlineKeyboardMarkup()
@@ -193,6 +210,12 @@ def telegramSide():
                     send_to_logger(e, call.message.chat.id)
             elif data == 'progifile':
                 pass
+            elif data == "friends":
+                markup , f = gen_friends_markup(call.message.chat.id)
+                if f == 0:
+                    bot.send_message(call.message.chat.id , f'У вас {f} друзей , но вы всегда можете добавить кого-то :) Максимум - {friendsCount} друзей.', reply_markup=markup)
+                else:
+                    bot.send_message(call.message.chat.id , f'У вас {f} друзей , максимум - {friendsCount}. А вот и они:', reply_markup=markup)
         except Exception as e:
             send_to_logger(e , call.message.from_user.id)
     def handle_group_input(message, user_id):
@@ -313,8 +336,7 @@ def distributionSide():
                         send_to_logger(schedule[0] , isntanexeption = True , id = users.id)
                     b(f'Расписание для {school} , {course} курс , группа {group}: ')
                     for user in same_groups[users]:
-                        g('Отправленно расписание для ' + str(user))
-                    bot.send_message(user , f'Расписание для {school} , {course} курс , группа {group}:\n\n{schedule}')
+                        bot.send_message(user , f'Расписание для {school} , {course} курс , группа {group}:\n\n{schedule}')
             time.sleep(60 * checkFrequency)
         except Exception as e:
             send_to_logger(e)
