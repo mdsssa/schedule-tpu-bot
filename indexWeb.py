@@ -66,9 +66,9 @@ def webside(day_index = 0 , group = "4А52" , optionsOn = True , school = 'ИШ�
 
         try:
             driver.find_element(By.XPATH , str(findSchoolXPatch(school=school))).click()
-            sleep(2)
+            sleep(1)
             driver.find_element(By.XPATH, f"//*[contains(text(), '{course} курс')]").click()
-            sleep(2)
+            sleep(1)
             driver.find_element(By.XPATH, f"//*[contains(text(), '{group.upper()}')]").click()
             speciality = driver.find_element(By.XPATH , '/html/body/div[2]/div/div/div[2]/div[1]/div[2]/div/div[1]/div[2]/ul/li[1]/a').text
             schedule = driver.find_element(By.XPATH , '/html/body/div[2]/div/div/div[2]/div[3]/table')
