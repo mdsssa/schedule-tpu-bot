@@ -184,18 +184,25 @@ def deleteFriends(id , index):
     except Exception as e:
         print(e)
 
-def getFriends(id , index):
+def getFriend(id , index):
     try:
         db = sql.connect(stPatch)
         cursor = db.cursor()
-        info = cursor.execute(f'SELECT * FROM Friends WHERE id = {id} AND Friendid = {index}')
+        info = cursor.execute(f'SELECT * FROM Friends WHERE id = ? AND Friendid = ?' , (id , index))
         info = info.fetchall()
-        print(info)
         db.close()
+        return info
+
+    except Exception as e:
+        print(e)
+def fixFriendsIds(id):
+    try:
+        db = sql.connect(stPatch)
+        cursor = db.cursor()
+        cursor.execute('SELECT * FROM Friends WHERE id = ?', (id,))
     except Exception as e:
         print(e)
 if __name__ == '__main__':
     makeDb()
     # DateManager(datenow= 12)
     print(checkUserSub(873729188))
-    getFriends(873729188 , 1)
