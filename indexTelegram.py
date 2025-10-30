@@ -20,9 +20,7 @@ daysOfWeek = {
     }
 
 checkFrequency = 10 #проверка/минуты
-messagesToDelete = {
-
-}
+messagesToDelete = []
 token = dotenv.dotenv_values('.env').get('TOKEN')
 loggerChat = dotenv.dotenv_values('.env').get('LOG_GROUP')
 friendsCount = dotenv.dotenv_values('.env').get('MAX_FRIENDS')
@@ -31,13 +29,18 @@ menulayout = {"Профиль" : 'profile' ,
               "Друзья" : 'friends' ,
               "Расписание": 'schedule' ,
                 }
-profileLa = {
+profileLayout = {
+    "Отписаться от рассылки:" : 'unsub'
 
 }
 bot = telebot.TeleBot(token= token)
 #id username course school group sub 
-def send_to_logger(ex , id = 0 , isntanexeption = False):
+def send_to_logger(ex , id = 0 , isntanexeption = False , justInfo = False):
     try:
+        if justInfo:
+            text =  f'{ex}' if id == 0 else f'{id}\n{ex}'
+            bot.send_message(chat_id=loggerChat, text=text)
+            return
         if id == 0:
             message = f'Произошла ошибка :{ex}'
         else:
@@ -63,8 +66,15 @@ def makeMarkupWithLayout(layout:dict):
     except Exception as e:
         send_to_logger(e)
 def generateMenu():
-    return makeMarkupWithLayout(menulayout)
-
+    try:
+        markup = InlineKeyboardMarkup()
+        profileb = InlineKeyboardButton(text="Профиль", callback_data="profile")
+        friendsb = InlineKeyboardButton(text="Друзья", callback_data="friends")
+        markup.row(profileb , friendsb)
+        markup.add(InlineKeyboardButton("Расписание" , callback_data="schedule"))
+        return markup
+    except Exception as e:
+        send_to_logger(e)
 def findUsersWithTheSameSchedule(users) -> dict:
     try:
         groupsandUsers = {}
@@ -86,64 +96,106 @@ def telegramSide():
             "ИШЭ" , "ИЯТШ" , "ИШФВП" , "ИШХБМТ" , 'УН' , "УОД" , "ШОН"]
 
     user_data = {}
-
-    def gen_course_markup():
+    def gen_profile_markup(id):
         try:
             markup = InlineKeyboardMarkup()
             markup.row_width = 3
-            markup.add(
-                InlineKeyboardButton("1 курс", callback_data="course_1"),
-                InlineKeyboardButton("2 курс", callback_data="course_2"),
-                InlineKeyboardButton("3 курс", callback_data="course_3"),
-                InlineKeyboardButton("4 курс", callback_data="course_4"),
-                InlineKeyboardButton("5 курс", callback_data="course_5"),
-                InlineKeyboardButton("6 курс", callback_data="course_6")
-            )
-            return markup
-        except Exception as e:
-            send_to_logger(e)
-    def deleteMessages(chatId:int  , id:int):
-        print(messagesToDelete)
-        try:
-            for i , messageId in enumerate(messagesToDelete[f'{id}']):
-                try:
-                    bot.delete_message(chat_id= chatId , message_id=messageId)
-                    del messagesToDelete[f'{id}'] [i]
-                    print(deleteMessages)
-                except Exception as e:
-                    send_to_logger(e)
-        except Exception as e:
-            send_to_logger(e)
-    def manageMesages(id , messageId):
-        try:
-            if f'{id}' not in messagesToDelete.keys():
-                messagesToDelete[f'{id}'] = [messageId]
+            sub = checkUserSub(id)
+            if sub:
+                markup.add(InlineKeyboardButton("Отписаться от рассылки", callback_data=f"unsub"))
             else:
-                messagesToDelete[f'{id}'] = messagesToDelete[f'{id}'].append(messageId)
+                markup.add(InlineKeyboardButton("Подписаться на рассылку", callback_data=f"sub"))
+            markup.add(InlineKeyboardButton("Вернуться в меню" , callback_data= "menu"))
+            return markup , sub
         except Exception as e:
             send_to_logger(e , id)
-    def gen_friends_markup(id):
+    def gen_course_markup(id , is_for_friend = False):
+        try:
+            markup = InlineKeyboardMarkup()
+            if not is_for_friend:
+                markup.row_width = 3
+                markup.add(
+                    InlineKeyboardButton("1 курс", callback_data="course_1"),
+                    InlineKeyboardButton("2 курс", callback_data="course_2"),
+                    InlineKeyboardButton("3 курс", callback_data="course_3"),
+                    InlineKeyboardButton("4 курс", callback_data="course_4"),
+                    InlineKeyboardButton("5 курс", callback_data="course_5"),
+                    InlineKeyboardButton("6 курс", callback_data="course_6")
+                )
+            else:
+                markup.row_width = 3
+                markup.add(
+                    InlineKeyboardButton("1 курс", callback_data="Fcourse_1"),
+                    InlineKeyboardButton("2 курс", callback_data="Fcourse_2"),
+                    InlineKeyboardButton("3 курс", callback_data="Fcourse_3"),
+                    InlineKeyboardButton("4 курс", callback_data="Fcourse_4"),
+                    InlineKeyboardButton("5 курс", callback_data="Fcourse_5"),
+                    InlineKeyboardButton("6 курс", callback_data="Fcourse_6")
+                )
+
+            return markup
+        except Exception as e:
+            send_to_logger(e , id)
+    def deleteMessages():
+        print(messagesToDelete)
+        try:
+            # for d in messagesToDelete:
+            #     for i , messageId in enumerate(messagesToDelete[d]):
+            #         try:
+            #             bot.delete_message(chat_id= d , message_id=messageId)
+            #             del messagesToDelete[f'{id}'] [i]
+            #         except Exception as e:
+            #             send_to_logger(e)
+            for message in messagesToDelete:
+                try:
+                    id , chat_id = message.split(':')
+                    bot.delete_message(chat_id=id , message_id=chat_id)
+                except Exception as e:
+                    send_to_logger(e , id)
+        except Exception as e:
+            send_to_logger(e)
+        del messagesToDelete[:]
+    def manageMessages(id , messageId , usCom = False):
+        try:
+            # if id not in messagesToDelete.keys():
+            #     messagesToDelete[id] = [messageId]
+            # else:
+            #     messagesToDelete[id] = messagesToDelete[id].append(messageId)
+            messagesToDelete.append(f'{id}:{messageId}')
+            if usCom:
+                messagesToDelete.append(f'{id}:{messageId - 1}')
+        except Exception as e:
+            send_to_logger(e , id)
+    def gen_friends_markup(id , isforDelete = False):
         markup = InlineKeyboardMarkup()
         markup.row_width = 2
         try:
-            friends = getfriends(id)
-            if not len(friends) == 0:
-                for i in friends:
-                    markup.add(InlineKeyboardButton(f'{friends[i][1]} , {friends[i][-1]}', callback_data=f"{id}_friend_{friends[i][-1]}"))
-                markup.add(InlineKeyboardButton("Удалить друга" , callback_data=f"{id}_friend_delete"))
-            markup.add(InlineKeyboardButton("Добавить друга" , callback_data=f"{id}_friend_add"))
-            return markup , len(friends)
+            friends1 = getfriends(id)
+            if isforDelete:
+                for i , friends in enumerate(friends1):
+                    markup.add(InlineKeyboardButton(f'{int(friends[-1]) + 1}.{friends[1]} , {friends[-2]}', callback_data=f"friend_delete_{id}_{friends[-1]}"))
+            else:
+                if not len(friends1) == 0:
+                    for i , friends in enumerate(friends1):
+                        markup.row_width = 1
+                        markup.add(InlineKeyboardButton(f'{int(friends[-1]) + 1}.{friends[1]} , {friends[-2]}', callback_data=f"{id}_friend_{friends[-1]}"))
+                    markup.add(InlineKeyboardButton("Удалить друга" , callback_data=f"friend_delete"))
+                if len(friends1) <= int(friendsCount):
+                    markup.add(InlineKeyboardButton("Добавить друга" , callback_data=f"friend_add"))
+            markup.add(InlineKeyboardButton("Вернуться в меню" , callback_data=f"menu"))
+            return markup , len(friends1)
         except Exception as e:
             send_to_logger(e , id)
-    def gen_school_markup():
+    def gen_school_markup(isForFriend = False):
         try:
             markup = InlineKeyboardMarkup()
             markup.row_width = 2
             for i, school in enumerate(s):
-                markup.add(InlineKeyboardButton(school, callback_data=f"school_{i}"))
+                markup.add(InlineKeyboardButton(school, callback_data=f"{f"school_{i}" if not isForFriend else f'Fschool_{i}'}"))
             return markup
         except Exception as e:
             send_to_logger(e)
+
     def genWeekMarkup():
         try:
             markup = InlineKeyboardMarkup()
@@ -154,7 +206,7 @@ def telegramSide():
         except Exception as e:
             send_to_logger(e)
 
-    @bot.message_handler(commands=['start'])
+    @bot.message_handler(commands=['start' , 'registration'])
     def stop_handler(message):
         try:
             if isUserInDb(message.from_user.id):
@@ -162,7 +214,7 @@ def telegramSide():
             user_id = message.from_user.id
             user_data[user_id] = {"username": message.from_user.username}
             bot.send_message(message.chat.id, 'Выберите ваш курс:', reply_markup=gen_course_markup())
-            # manageMesages(id = message.from_user.id , messageId= message.id + 1)
+            manageMessages(id = message.from_user.id , messageId= message.id -1)
         except Exception as e:
             send_to_logger(e , message.from_user.id)
 
@@ -171,28 +223,32 @@ def telegramSide():
     @bot.message_handler(commands= ['week'])
     def weekHandler(message):
         try:
-        # manageMesages(id = message.from_user.id , messageId= message.id + 1)
+            manageMessages(id = message.from_user.id , messageId= message.id + 1)
             bot.send_message(message.from_user.id , "Выберите день недели:" , reply_markup= genWeekMarkup())
         except Exception as e:
             send_to_logger(e , message.from_user.id)
+        deleteMessages()
+
     @bot.callback_query_handler(func=lambda call: True)
     def callback_handler(call):
         try:
             user_id = call.from_user.id
             data = call.data
-
+            chat_id = call.message.chat.id
+            delete = True
+            manageMessages(id=chat_id, messageId=call.message.id)
+            print(chat_id)
             if data.startswith("course_"):
                 course = data.split("_")[1]
-                user_data[user_id]["course"] = course
-                # deleteMessages(chatId= call.message.chat.id , id = call.message.chat.id)
+                user_data[chat_id]["course"] = course
                 bot.send_message(call.message.chat.id, 'Выберите вашу школу:', reply_markup=gen_school_markup())
                 bot.answer_callback_query(call.id)
-                # manageMesages(id = call.message.chat.id , messageId= call.message.id + 1)
             elif data.startswith("school_"):
                 school_index = int(data.split("_")[1])
                 school = s[school_index]
-                user_data[user_id]["school"] = school
+                user_data[chat_id]["school"] = school
                 bot.send_message(call.message.chat.id, 'Введите вашу группу (например, 4А52)\nБуквы в номере группы - это кириллица:')
+
                 bot.register_next_step_handler(call.message, handle_group_input, user_id)
                 bot.answer_callback_query(call.id)
             elif data.startswith('weekDay_'):
@@ -200,55 +256,96 @@ def telegramSide():
                 sche = webside(day_index= dayIndex , wId= True , id = call.message.chat.id)
                 if not sche[1]:
                     send_to_logger(sche[0] , isntanexeption = True , id = call.message.chat.id)
-                # deleteMessages(chatId= call.message.chat.id , id = call.message.chat.id)
-                bot.send_message(call.message.chat.id , sche[0])
+                bot.send_message(call.message.chat.id , sche[0] , reply_markup= InlineKeyboardButton('Вернуться в меню' , callback_data='menu'))
+                delete = False
+                bot.answer_callback_query(call.id)
             elif data == 'schedule':
                 try:
-                    # manageMesages(id = message.from_user.id , messageId= message.id + 1)'
                     bot.send_message(call.message.chat.id, "Выберите день недели:", reply_markup=genWeekMarkup())
                 except Exception as e:
                     send_to_logger(e, call.message.chat.id)
-            elif data == 'progifile':
-                pass
+            elif data == 'profile':
+                print(call.message.chat.id)
+                markup , sub = gen_profile_markup(call.message.chat.id)
+                bot.send_message(call.message.chat.id , getUserProfile(chat_id) , reply_markup= markup)
             elif data == "friends":
                 markup , f = gen_friends_markup(call.message.chat.id)
                 if f == 0:
                     bot.send_message(call.message.chat.id , f'У вас {f} друзей , но вы всегда можете добавить кого-то :) Максимум - {friendsCount} друзей.', reply_markup=markup)
                 else:
-                    bot.send_message(call.message.chat.id , f'У вас {f} друзей , максимум - {friendsCount}. А вот и они:', reply_markup=markup)
+                    bot.send_message(call.message.chat.id , f'Кол-во ваших друзей - {f} , максимум - {friendsCount}. А вот и {"они" if f > 1 else "он"}:', reply_markup=markup)
+            elif data == "menu":
+                text = 'Вы в главном меню.\nВозможные действия:'
+                bot.send_message(call.message.chat.id,text=text,
+                                     reply_markup=generateMenu())
+            #     markup.add(InlineKeyboardButton("Удалить друга" , callback_data=f"{id}_friend_delete"))
+            # markup.add(InlineKeyboardButton("Добавить друга" , callback_data=f"{id}_friend_add"))
+            elif data == f"friend_add":
+                FriendRegistration[f'{chat_id}'] = {"id" : chat_id}
+                bot.send_message(chat_id, "Какой курс у твоего друга?" , reply_markup=gen_course_markup(chat_id , True))
+            elif data.startswith("Fcourse_"):
+                course = data.split("_")[1]
+                FriendRegistration[f'{chat_id}']['course'] = course
+                print(FriendRegistration)
+                bot.send_message(call.message.chat.id, 'Выберите его школу:', reply_markup=gen_school_markup(isForFriend=True))
+                bot.answer_callback_query(call.id , text = "Готово!")
+            elif data.startswith("Fschool_"):
+                school_index = int(data.split("_")[1])
+                school = s[school_index]
+                FriendRegistration[f'{chat_id}']["school"] = school
+                bot.send_message(call.message.chat.id,
+                                 'Введите его группу (например, 4А52)\nБуквы в номере группы - это кириллица:')
+                bot.register_next_step_handler(call.message, handle_group_input, chat_id , True)
+                bot.answer_callback_query(call.id , "Готово!")
+            elif data == 'friend_delete':
+                bot.send_message(call.message.chat.id, "Выбери друга для удаления:" , reply_markup=gen_friends_markup(call.message.chat.id , isforDelete=True)[0])
+            elif data.startswith(f"friend_delete"):
+                bot.send_message(chat_id , "Друг удален!")
+            if delete:
+                manageMessages(id=chat_id, messageId=call.message.id)
+                deleteMessages()
         except Exception as e:
-            send_to_logger(e , call.message.from_user.id)
-    def handle_group_input(message, user_id):
+            send_to_logger(e , call.message.chat.id)
+
+    def handle_group_input(message, chat_id , isForFriend = False):
         group = message.text.strip()
         if not group:
             bot.send_message(message.chat.id, 'Группа не может быть пустой. Пожалуйста, введите группу еще раз:')
-            bot.register_next_step_handler(message, handle_group_input, user_id)
+            bot.register_next_step_handler(message, handle_group_input, chat_id)
             return
-
-        user_data[user_id]["group"] = group
-        try:
-            result = registrate_user(
-                user_id,
-                user_data[user_id]["username"],
-                user_data[user_id]["course"],
-                user_data[user_id]["school"],
-                user_data[user_id]["group"],
-                True
-            )
-            bot.send_message(message.chat.id , result)
-        except Exception as e:
+        manageMessages(id=message.from_user.id, messageId=message.id - 1)
+        manageMessages(id=message.from_user.id, messageId=message.id)
+        if not isForFriend:
             try:
-                send_to_logger(e , message.from_user.id)
-                bot.send_message(message.chat.id, f'Ошибка при регистрации: {e}')
+
+                user_data[chat_id]["group"] = group
+                result = registrate_user(
+                    chat_id,
+                    user_data[chat_id]["username"],
+                    user_data[chat_id]["course"],
+                    user_data[chat_id]["school"],
+                    user_data[chat_id]["group"],
+                    True
+                )
+                bot.send_message(message.chat.id, result)
             except Exception as e:
-                pass
-        finally:
-            if user_id in user_data:
-                del user_data[user_id]
+                try:
+                    send_to_logger(e, chat_id)
+                    bot.send_message(message.chat.id, f'Ошибка при регистрации: {e}')
+                except Exception as e:
+                    pass
+            finally:
+                if chat_id in user_data:
+                    del user_data[chat_id]
+        else:
+            FriendRegistration[str(chat_id)]["group"] = group
+            bot.send_message(chat_id , 'Хорошо , теперь введи его имя :)')
+            print(FriendRegistration)
 
 
     @bot.message_handler(commands=['subscribe' , 'sub' , 'подписаться'])
     def subscribe_handler(message):
+        manageMessages(id=message.from_user.id, messageId=message.id - 1)
         try:
             if not checkUserSub(message.from_user.id):
                 user_id = message.from_user.id
@@ -263,6 +360,7 @@ def telegramSide():
 
     @bot.message_handler(commands=['unsubscribe' , 'unsub' , 'отписаться'])
     def unsubscribe_handler(message):
+        manageMessages(id=message.from_user.id, messageId=message.id - 1)
         try:
             user_id = message.from_user.id
             if isUserInDb(user_id) and checkUserSub(user_id):
@@ -277,6 +375,7 @@ def telegramSide():
 
 
     def deleteHandler(message) -> None:
+        manageMessages(id=message.from_user.id, messageId=message.id - 1)
         try:
             findUsersWithTheSameSchedule()
             deleteUser(message.from_user.id)
@@ -286,6 +385,7 @@ def telegramSide():
             send_to_logger(e , message.from_user.id)
     @bot.message_handler(commands= ['profile'])
     def profileHandler(message:telebot) -> None:
+        manageMessages(id=message.from_user.id, messageId=message.id - 1)
         try:
             bot.send_message(message.from_user.id , getUserProfile(id = message.from_user.id , username= message.from_user.username , firstname= message.from_user.first_name) )
         except Exception as e:
@@ -293,9 +393,12 @@ def telegramSide():
 
     @bot.message_handler(commands= ['menu'])
     def menu(message:telebot) -> None:
-        bot.send_message(message.from_user.id , text = getUserProfile(message.from_user.id , message.from_user.username , firstname= message.from_user.first_name ), reply_markup= generateMenu())
+        manageMessages(id=message.from_user.id, messageId=message.id - 1)
+        text = ''
+        bot.send_message(message.from_user.id , text = getUserProfile(message.from_user.id)  , reply_markup= generateMenu())
     @bot.message_handler(commands= daysOfWeek["rus"] + daysOfWeek["eng"])    
     def LastHandler(message) -> None:
+        manageMessages(id=message.from_user.id, messageId=message.id - 1)
         def getDayIndex(list_ , element) -> int:
             try:
                 for i in range(len(list_)):
@@ -317,6 +420,39 @@ def telegramSide():
             bot.send_message(message.from_user.id , sche[0])
         except Exception as e:
             send_to_logger(e , message.from_user.id)
+        deleteMessages()
+    @bot.message_handler()
+    def getName(message):
+        manageMessages(id=message.from_user.id, messageId=message.id - 1)
+        manageMessages(id=message.from_user.id, messageId=message.id )
+        chat_id = message.chat.id
+        #{'873729188': {'id': 873729188, 'course': '2', 'school': 'ИШПР', 'group': '234', 'name': '234'}}
+        if str(chat_id) in FriendRegistration.keys():
+            print(FriendRegistration[str(message.chat.id)])
+            FriendRegistration[str(message.chat.id)]['name'] = message.text
+            try:
+                userdata = FriendRegistration[str(message.chat.id)]
+                addFriends(
+                    id = userdata['id']
+                    ,name = userdata['name']
+                    ,school = userdata['school']
+                    ,group = userdata['group']
+                    ,course = userdata['course']
+                )
+                markup = InlineKeyboardMarkup()
+                markup.row_width = 2
+                markup.add(InlineKeyboardButton("Вернуться в меню" , callback_data = 'menu'))
+                bot.send_message(message.from_user.id , "Друг добавлен!" , reply_markup= markup)
+            except Exception as e:
+                try:
+                    send_to_logger(e, chat_id)
+                    bot.send_message(message.chat.id, f'Ошибка при добавлении: {e}')
+                except Exception as e:
+                    pass
+            finally:
+                if str(chat_id) in FriendRegistration.keys():
+                    del FriendRegistration[str(chat_id)]
+        deleteMessages()
     bot.infinity_polling()
     
     
@@ -334,9 +470,10 @@ def distributionSide():
                                         ,  group = group , school= school , course= int(course) , optionsOn= True)
                     if not schedule[1]:
                         send_to_logger(schedule[0] , isntanexeption = True , id = users.id)
-                    b(f'Расписание для {school} , {course} курс , группа {group}: ')
+                    t = f'Отправленно расписание для {school} , {course} курс , группа {group}: {same_groups[users]}'
                     for user in same_groups[users]:
-                        bot.send_message(user , f'Расписание для {school} , {course} курс , группа {group}:\n\n{schedule}')
+                        bot.send_message(user , f'Расписание для {school} , {course} курс , группа {group}:\n\n{schedule[0]}')
+                    send_to_logger(t , justInfo = True)
             time.sleep(60 * checkFrequency)
         except Exception as e:
             send_to_logger(e)
