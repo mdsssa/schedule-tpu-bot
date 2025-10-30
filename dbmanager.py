@@ -1,4 +1,6 @@
 import sqlite3 as sql
+import time
+
 from colorama import Fore
 import os
 #id username course school group sub 
@@ -12,7 +14,7 @@ def b(text):
 tables = {
     'date' : '(date integer)' ,
     'users' : "(id integer , username string , course integer , school string , 'group' string , sub integer)" ,
-    'friendsList' : "(id integer , friendName string , friendcourse integer , friendschool string ,'group' string)"
+    'Friends' : "(id integer , friendName string , friendcourse integer , friendschool string , friendgroup string , Friendid integer)"
 }
 def makeDb():
     try:
@@ -54,8 +56,9 @@ def getUserInfo(id):
 def getAllSubscribedUsers() -> list:
     try:
         db = sql.connect(stPatch)
-        cursor = db.cursor().execute('SELECT * FROM users WHERE sub = 1')
-        a = cursor.fetchall()
+        cursor = db.cursor()
+        info = cursor.execute('SELECT * FROM users WHERE sub = 1')
+        a = info.fetchall()
         db.close()
         return a
     except Exception as e:
@@ -109,11 +112,14 @@ def isUserInDb(id):
     a = cursor.fetchall()
     db.close()
     return len(a) > 0
+
+
 def checkUserSub(id):
     try:
         db = sql.connect(stPatch)
-        cursor = db.cursor().execute(f'SELECT sub FROM users WHERE id = {id}')
-        a = cursor.fetchall()[0][0]
+        cursor = db.cursor()
+        info = cursor.execute(f'SELECT sub FROM users WHERE id = {id}')
+        a = info.fetchone()[0]
         db.close()
         return bool(a)
     except Exception as e:
@@ -129,18 +135,17 @@ def deleteUser(id):
         r(f'Профиль пользователя {id} удален')
     except Exception as e:
         r(f'Произошла ошибка {e} при удалении профиля пользователя {id}')
-def getUserProfile(id , username , firstname):
+def getUserProfile(id):
     try:
         if not isUserInDb(id):
-            return 'У вас нет профиля , пройдите регистрацию коммандой /start.'
+            return 'У вас нет профиля , пройдите регистрацию коммандой /registration.'
         else:
             db = sql.connect(stPatch)
             cursor = db.cursor()
             info = cursor.execute(f'SELECT * FROM users WHERE id = {id}')
             info = info.fetchone()
             db.close()
-            return f'''{firstname} , @{username}
-{"Вы подписанны на рассылку📬" if bool(info[-1]) else "Вы не подписанны на рассылку📭"}
+            return f'''{"Вы подписанны на рассылку📬" if bool(info[-1]) else "Вы не подписанны на рассылку📭"}
 Курс - {info[2]}
 Школа - {info[3]}
 Группа - {info[4]}'''
@@ -151,17 +156,46 @@ def getfriends(id):
     try:
         db = sql.connect(stPatch)
         cursor = db.cursor()
-        info = cursor.execute(f'SELECT * FROM friendsList WHERE id = {id}')
+        info = cursor.execute(f'SELECT * FROM Friends WHERE id = {id}')
         info = info.fetchall()
+        print(info)
         db.close()
         return info
     except Exception as e:
         print(e)
-def addFriends(id , course , school ):
+#{'873729188': {'id': 873729188, 'course': '2', 'school': 'ИШПР', 'group': '234', 'name': '234'}}
+#'Friends' : "(id integer , friendName string , friendcourse integer , friendschool string , friendgroup string , Friendid integer)"
+def addFriends(id , course , school  , group , name):
     try:
-        pass
+        db = sql.connect(stPatch)
+        cursor = db.cursor()
+        cursor.execute("INSERT INTO Friends VALUES (? , ? , ? , ? , ? , ?)" , (id , name, course, school, group , len(getfriends(id))))
+        db.commit()
+        db.close()
     except Exception as e:
-        pass
+        print(e)
+def deleteFriends(id , index):
+    try:
+        db = sql.connect(stPatch)
+        cursor = db.cursor()
+        cursor.execute(f"DELETE FROM Friends WHERE id = {id} AND Friendid = {index}")
+        db.commit()
+        db.close()
+    except Exception as e:
+        print(e)
+
+def getFriends(id , index):
+    try:
+        db = sql.connect(stPatch)
+        cursor = db.cursor()
+        info = cursor.execute(f'SELECT * FROM Friends WHERE id = {id} AND Friendid = {index}')
+        info = info.fetchall()
+        print(info)
+        db.close()
+    except Exception as e:
+        print(e)
 if __name__ == '__main__':
     makeDb()
-
+    # DateManager(datenow= 12)
+    print(checkUserSub(873729188))
+    getFriends(873729188 , 1)
