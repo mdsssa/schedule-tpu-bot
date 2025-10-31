@@ -23,9 +23,13 @@ daysOfWeek = {
 
 checkFrequency = 10 #проверка/минуты
 messagesToDelete = []
+
+
 token = dotenv.dotenv_values('.env').get('TOKEN')
 loggerChat = dotenv.dotenv_values('.env').get('LOG_GROUP')
 friendsCount = dotenv.dotenv_values('.env').get('MAX_FRIENDS')
+admins = dotenv.dotenv_values('.env').get('ADMINSIDS')
+
 
 menulayout = {"Профиль" : 'profile' ,
               "Друзья" : 'friends' ,
@@ -67,16 +71,18 @@ def makeMarkupWithLayout(layout:dict):
         return markup
     except Exception as e:
         send_to_logger(e)
-def generateMenu():
+def generateMenu(id):
     try:
         markup = InlineKeyboardMarkup()
         profileb = InlineKeyboardButton(text="Профиль", callback_data="profile")
         friendsb = InlineKeyboardButton(text="Друзья", callback_data="friends")
         markup.row(profileb , friendsb)
         markup.add(InlineKeyboardButton("Расписание" , callback_data="schedule"))
+        if str(id) in admins:
+            markup.add(InlineKeyboardButton('Админское меню' , callback_data="adminMenu"))
         return markup
     except Exception as e:
-        send_to_logger(e)
+        send_to_logger(e , id)
 def findUsersWithTheSameSchedule(users) -> dict:
     try:
         groupsandUsers = {}
@@ -271,7 +277,7 @@ def telegramSide():
             elif data == "menu":
                 text = 'Вы в главном меню.\nВозможные действия:'
                 bot.send_message(call.message.chat.id,text=menuText,
-                                     reply_markup=generateMenu())
+                                     reply_markup=generateMenu(chat_id))
             #     markup.add(InlineKeyboardButton("Удалить друга" , callback_data=f"{id}_friend_delete"))
             # markup.add(InlineKeyboardButton("Добавить друга" , callback_data=f"{id}_friend_add"))
             elif data == f"friend_add":
@@ -329,8 +335,14 @@ def telegramSide():
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton("Друзья" , callback_data=f"friends"))
                 markup.add(InlineKeyboardButton('Вернуться в меню' , callback_data=f"menu"))
-
                 bot.send_message(chat_id ,  sche , reply_markup=markup)
+            elif data == 'adminMenu':
+                markup = InlineKeyboardMarkup()
+                markup.add(InlineKeyboardButton("LOG", callback_data=f"log"))
+                markup.add(InlineKeyboardButton('UPDATE LOG', callback_data=f"updatelog"))
+                markup.add(InlineKeyboardButton('GET DB' , callback_data = 'getdb'))
+                markup.add(InlineKeyboardButton('BACK TO THE MENU' , callback_data=f"menu"))
+                bot.send_message(chat_id , 'ADMIN MENU', reply_markup=markup)
         except Exception as e:
             send_to_logger(e , call.message.chat.id)
 
@@ -423,7 +435,7 @@ def telegramSide():
     def menu(message:telebot) -> None:
         manageMessages(id=message.from_user.id, messageId=message.id - 1)
         text = ''
-        bot.send_message(message.from_user.id , text = menuText  , reply_markup= generateMenu())
+        bot.send_message(message.from_user.id , text = menuText  , reply_markup= generateMenu(message.from_user.id))
     @bot.message_handler(commands= daysOfWeek["rus"] + daysOfWeek["eng"])    
     def LastHandler(message) -> None:
         manageMessages(id=message.from_user.id, messageId=message.id - 1)
