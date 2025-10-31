@@ -158,7 +158,6 @@ def getfriends(id):
         cursor = db.cursor()
         info = cursor.execute(f'SELECT * FROM Friends WHERE id = {id}')
         info = info.fetchall()
-        print(info)
         db.close()
         return info
     except Exception as e:
@@ -204,7 +203,6 @@ def fixFriendsIds(id):
         fixed = []
         db.close()
         for i , friend in enumerate(info):
-            print(friend)
             fixed.append((friend[0], friend[1] , friend[2] , friend[3] , friend[4] , i))
         db = sql.connect(stPatch)
         cursor = db.cursor()
@@ -219,5 +217,4 @@ def fixFriendsIds(id):
 if __name__ == '__main__':
     makeDb()
     # DateManager(datenow= 12)
-    # print(checkUserSub(873729188))
-    print(fixFriendsIds(873729188))
+    print(checkUserSub(873729188))

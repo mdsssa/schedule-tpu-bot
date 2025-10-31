@@ -320,7 +320,6 @@ def telegramSide():
                 data = data.split("_")
                 bot.send_message(chat_id , "Выберете день недели:" , reply_markup=genWeekMarkup(forFriend= True , id= chat_id, friend_index=int(data[-1])))
             elif data.startswith(f"FweekDay_"):
-            #markup.add(InlineKeyboardButton(weekDay.capitalize() , callback_data=f"{f"weekDay_{i}" if not forFriend else f'FweekDay_{i}_{id}_{friend_index}'}"))
                 frId = data.split("_")[-1]
                 weekDay = int(data.split("_")[1])
                 friend = getFriend(chat_id , int(frId[-1]))[0]
@@ -328,8 +327,9 @@ def telegramSide():
                 if not ex:
                     send_to_logger(sche , chat_id)
                 markup = InlineKeyboardMarkup()
-                markup.add(InlineKeyboardButton('Вернуться в меню' , callback_data=f"menu"))
                 markup.add(InlineKeyboardButton("Друзья" , callback_data=f"friends"))
+                markup.add(InlineKeyboardButton('Вернуться в меню' , callback_data=f"menu"))
+
                 bot.send_message(chat_id ,  sche , reply_markup=markup)
         except Exception as e:
             send_to_logger(e , call.message.chat.id)
