@@ -232,7 +232,6 @@ def telegramSide():
             deleteMessages()
             user_id = call.from_user.id
             data = call.data
-            print(data)
             manageMessages(id=chat_id, messageId=call.message.id)
             if data.startswith("course_"):
                 course = data.split("_")[1]
@@ -298,8 +297,8 @@ def telegramSide():
 
             elif data.startswith("friend_delete_"):
                 friendId = int(data.split("_")[-1])
-
                 deleteFriends(call.message.chat.id , friendId)
+                fixFriendsIds(chat_id)
                 markup, f = gen_friends_markup(call.message.chat.id)
                 if f == 0:
                     bot.send_message(call.message.chat.id,
@@ -309,7 +308,6 @@ def telegramSide():
                     bot.send_message(call.message.chat.id,
                                      f'Кол-во ваших друзей - {f} , максимум - {friendsCount}. А вот и {"они" if f > 1 else "он"}:',
                                      reply_markup=markup)
-
             elif data == "unsub":
                 updateUserSub(chat_id , False)
                 markup, sub = gen_profile_markup(call.message.chat.id)
@@ -326,6 +324,7 @@ def telegramSide():
                 frId = data.split("_")[-1]
                 weekDay = int(data.split("_")[1])
                 friend = getFriend(chat_id , int(frId[-1]))[0]
+                print(frId , weekDay)
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton('Вернуться в меню' , callback_data=f"menu"))
                 bot.send_message(chat_id , webside(day_index=weekDay , course = friend[2] , group= friend[3], school= friend[4]) , reply_markup=markup)
