@@ -5,6 +5,8 @@ from time import sleep
 from schoolsXpathes import findSchoolXPatch
 import datetime
 from dbmanager import *
+import traceback
+import sys
 # from indexTelegram import send_to_logger
 def send_to_logger(e):
     pass
@@ -39,10 +41,11 @@ def isBackPairs(index , element):
 
 
 
-def webside(day_index = 0 , group = "4А52" , optionsOn = True , school = 'ИШНПТ' , course = 1 , wId = False , id = None):
+def webside(day_index = 0 , group = "4А52" , optionsOn = True , school = 'ИШНПТ' , course = 1 , wId = False , id = None , forFriend = False):
     if wId:
         if id != None:
             id , username , course , school , group , sub = getUserInfo(id)
+    print(day_index , group, school, course, wId , id)
     try:
         day_index = 0 if day_index == 6 else day_index
         options = webdriver.ChromeOptions()
@@ -66,15 +69,21 @@ def webside(day_index = 0 , group = "4А52" , optionsOn = True , school = 'ИШ�
 
         try:
             driver.find_element(By.XPATH , str(findSchoolXPatch(school=school))).click()
-            sleep(1)
             driver.find_element(By.XPATH, f"//*[contains(text(), '{course} курс')]").click()
-            sleep(1)
             driver.find_element(By.XPATH, f"//*[contains(text(), '{group.upper()}')]").click()
             speciality = driver.find_element(By.XPATH , '/html/body/div[2]/div/div/div[2]/div[1]/div[2]/div/div[1]/div[2]/ul/li[1]/a').text
             schedule = driver.find_element(By.XPATH , '/html/body/div[2]/div/div/div[2]/div[3]/table')
             rows = schedule.find_elements(By.TAG_NAME, 'tr')
         except Exception as e:
-            return "Вы ввели неправильные данные при регистрации. Свои данные вы можете просмотреть командой /profile , или пройти повторную регестрацию коммандой /start" , False
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            tb_list = traceback.extract_tb(exc_traceback)
+            last_frame = tb_list[-1]
+            file_name = last_frame.filename
+            line_number = last_frame.lineno
+            function_name = last_frame.name
+            message = f'{e}\nОшибка {exc_type.__name__}\nНа строке {line_number} ,в функции {function_name} файла {file_name} '
+            print(message)
+            return ("Вы ввели неправильные данные при регистрации. Свои данные вы можете просмотреть командой /profile , или пройти повторную регестрацию коммандой /start" , False) if not forFriend else ("Вы ввели неправильные данные при регистрации друга!\nПопробуйте добавить его заново во вкладке «Друзья»" , False)
 
 
         #Сортировка данных

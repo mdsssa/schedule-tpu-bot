@@ -324,10 +324,13 @@ def telegramSide():
                 frId = data.split("_")[-1]
                 weekDay = int(data.split("_")[1])
                 friend = getFriend(chat_id , int(frId[-1]))[0]
-                print(frId , weekDay)
+                sche , ex = webside(day_index=weekDay , course = friend[2] , group= friend[4], school= friend[3] , forFriend= True)
+                if not ex:
+                    send_to_logger(sche , chat_id)
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton('Вернуться в меню' , callback_data=f"menu"))
-                bot.send_message(chat_id , webside(day_index=weekDay , course = friend[2] , group= friend[3], school= friend[4]) , reply_markup=markup)
+                markup.add(InlineKeyboardButton("Друзья" , callback_data=f"friends"))
+                bot.send_message(chat_id ,  sche , reply_markup=markup)
         except Exception as e:
             send_to_logger(e , call.message.chat.id)
 

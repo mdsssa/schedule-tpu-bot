@@ -200,9 +200,24 @@ def fixFriendsIds(id):
         db = sql.connect(stPatch)
         cursor = db.cursor()
         cursor.execute('SELECT * FROM Friends WHERE id = ?', (id,))
+        info = cursor.fetchall()
+        fixed = []
+        db.close()
+        for i , friend in enumerate(info):
+            print(friend)
+            fixed.append((friend[0], friend[1] , friend[2] , friend[3] , friend[4] , i))
+        db = sql.connect(stPatch)
+        cursor = db.cursor()
+        cursor.execute('DELETE FROM Friends WHERE id = ?', (id,))
+        db.commit()
+        for friend in fixed:
+            cursor.execute(f"INSERT INTO Friends VALUES {str(friend)}")
+        db.commit()
+        db.close()
     except Exception as e:
         print(e)
 if __name__ == '__main__':
     makeDb()
     # DateManager(datenow= 12)
-    print(checkUserSub(873729188))
+    # print(checkUserSub(873729188))
+    print(fixFriendsIds(873729188))
