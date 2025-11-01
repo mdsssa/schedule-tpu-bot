@@ -11,7 +11,8 @@ import dotenv
 import string
 import sys
 import traceback
-dont_delete = []
+
+
 menuText = 'Вы в главном меню!\nТут есть все , что вам нужно.'
 FriendRegistration = {
 
