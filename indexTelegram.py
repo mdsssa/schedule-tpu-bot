@@ -114,6 +114,7 @@ def telegramSide():
             else:
                 markup.add(InlineKeyboardButton("Подписаться на рассылку", callback_data=f"sub"))
             markup.add(InlineKeyboardButton("Вернуться в меню" , callback_data= "menu"))
+            markup.add(InlineKeyboardButton("Удалить это сообщение" , callback_data = 'None'))
             return markup , sub
         except Exception as e:
             send_to_logger(e , id)
@@ -511,7 +512,12 @@ def distributionSide():
                         send_to_logger(schedule[0] , isntanexeption = True , id = users.id)
                     t = f'Отправленно расписание для {school} , {course} курс , группа {group}: {same_groups[users]}'
                     for user in same_groups[users]:
-                        bot.send_message(user , f'Расписание для {school} , {course} курс , группа {group}:\n\n{schedule[0]}')
+                        markup = InlineKeyboardMarkup()
+                        try:
+                            markup.add(InlineKeyboardButton("Удалить это сообщение" , callback_data = 'None'))
+                        except Exception as e:
+                            send_to_logger(e , user.id)
+                        bot.send_message(user , f'Расписание для {school} , {course} курс , группа {group}:\n\n{schedule[0]}' , reply_markup= markup)
                     send_to_logger(t , justInfo = True)
             time.sleep(60 * checkFrequency)
         except Exception as e:

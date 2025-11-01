@@ -89,19 +89,25 @@ def webside(day_index = 0 , group = "4А52" , optionsOn = True , school = 'ИШ�
         dataspec = getSpecificDay(data , day_index)
         count = 0
         to_return = '' + "Специальность : " + speciality + '.'  + '\n' + daysOfWeek[day_index] + '\n'
+        text = ''
         for i in range(len(dataspec)):
             count += 1
             time = dataspec[i][0]
             subj = dataspec[i][1]
-            if isNextPairs(i , dataspec) and subj == '' and isBackPairs(i , dataspec):
-                to_return += f'{count}.{time.replace('\n' , '-')} - Окно' + '\n'
-            elif subj == '':
-                to_return += '\n'
-            else:
-                to_return += f'{count}. {time.replace('\n' , '-')} - {subj}' + '\n'
-            to_return += '\n'
-        driver.quit()
 
+            if isNextPairs(i , dataspec) and subj == '' and isBackPairs(i , dataspec):
+                text += f'{count}.{time.replace('\n' , '-')} - Окно' + '\n'
+            elif subj == '':
+                text += '\n'
+            else:
+                text += f'{count}. {time.replace('\n' , '-')} - {subj}' + '\n'
+
+            text += '\n'
+        if 'нерабочий праздничный день' in text.lower():
+                text = 'Нерабочий праздничный день!\nОтдыхай😴'
+        to_return += text
+
+        driver.quit()
         return to_return , True
     except Exception as e:
         try:
