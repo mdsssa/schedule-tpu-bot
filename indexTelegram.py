@@ -11,8 +11,11 @@ import dotenv
 import string
 import sys
 import traceback
-
-
+if not os.path.exists("./log.txt"):
+    with open("./log.txt", "a") as log:
+        log.write(
+            'LOG'
+        )
 menuText = 'Вы в главном меню!\nТут есть все , что вам нужно.'
 FriendRegistration = {
 
@@ -41,7 +44,13 @@ profileLayout = {
 
 }
 bot = telebot.TeleBot(token= token)
-#id username course school group sub 
+#id username course school group sub
+def save_log(ex , id):
+    try:
+        with open("./log.txt", "a" , encoding= 'utf-8') as log:
+            log.write(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}\n{id}\n{ex}\n')
+    except Exception as e:
+        print(e)
 def send_to_logger(ex , id = 0 , isntanexeption = False , justInfo = False):
     try:
         if justInfo:
@@ -61,8 +70,9 @@ def send_to_logger(ex , id = 0 , isntanexeption = False , justInfo = False):
             function_name = last_frame.name
             message = f'{message}\nОшибка {exc_type.__name__}\nНа строке {line_number} ,в функции {function_name} файла {file_name} '
         bot.send_message(chat_id = loggerChat, text=f'{message}')
+        save_log(message, id)
     except Exception as e:
-        print(e)
+        save_log(ex, id)
 def makeMarkupWithLayout(layout:dict):
     try:
         markup = InlineKeyboardMarkup()
@@ -300,7 +310,6 @@ def telegramSide():
                 bot.answer_callback_query(call.id , "Готово!")
             elif data == 'friend_delete':
                 bot.send_message(call.message.chat.id, "Выбери друга для удаления:" , reply_markup=gen_friends_markup(call.message.chat.id , isforDelete=True)[0])
-
             #markup.add(InlineKeyboardButton(f'{int(friends[-1]) + 1}.{friends[1]} , {friends[-2]}', callback_data=f"friend_delete_{id}_{friends[-1]}"))
 
             elif data.startswith("friend_delete_"):
@@ -345,6 +354,30 @@ def telegramSide():
                 markup.add(InlineKeyboardButton('GET DB' , callback_data = 'getdb'))
                 markup.add(InlineKeyboardButton('BACK TO THE MENU' , callback_data=f"menu"))
                 bot.send_message(chat_id , 'ADMIN MENU', reply_markup=markup)
+            elif data == 'log':
+                markup = InlineKeyboardMarkup()
+                markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
+                try:
+                    bot.send_document(call.message.chat.id , open('./log.txt') , reply_markup=markup)
+                except Exception as e:
+                    bot.send_message(call.message.chat.id , str(e) , reply_markup=markup)
+                    send_to_logger(e , chat_id)
+            elif data == 'updatelog':
+                markup = InlineKeyboardMarkup()
+                markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
+                try:
+                    bot.send_document(chat_id , open('./log.txt') , reply_markup=markup , caption='Log was updated! , old log file:')
+                    with open('./log.txt' , 'w' , encoding= 'utf-8') as log:
+                        log.write('LOG')
+                except Exception as e:
+                    bot.send_message(chat_id , str(e) , reply_markup=markup)
+            elif data == 'getdb':
+                markup = InlineKeyboardMarkup()
+                markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
+                try:
+                    bot.send_document(chat_id , open('./info.db' , 'rb') , reply_markup=markup)
+                except Exception as e:
+                    bot.send_message(chat_id , str(e) , reply_markup=markup)
         except Exception as e:
             send_to_logger(e , call.message.chat.id)
 
