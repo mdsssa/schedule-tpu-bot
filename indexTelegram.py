@@ -343,12 +343,18 @@ def telegramSide():
                 frId = data.split("_")[-1]
                 weekDay = int(data.split("_")[1])
                 friend = getFriend(chat_id , int(frId[-1]))[0]
+                bot.send_message(chat_id , 'Пожалуйста , подождите...')
+                try:
+                    manageMessages(chat_id , call.message.id + 1)
+                except Exception as e:
+                    pass
                 sche , ex = webside(day_index=weekDay , course = friend[2] , group= friend[4], school= friend[3] , forFriend= True)
                 if not ex:
                     send_to_logger(sche , chat_id)
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton("Друзья" , callback_data=f"friends"))
                 markup.add(InlineKeyboardButton('Вернуться в меню' , callback_data=f"menu"))
+                deleteMessages()
                 bot.send_message(chat_id ,  sche , reply_markup=markup)
             elif data == 'adminMenu':
                 markup = InlineKeyboardMarkup()
