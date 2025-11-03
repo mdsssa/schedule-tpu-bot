@@ -9,19 +9,15 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV SE_CACHE_PATH=/tmp/selenium-cache
 
-# Точная версия Chrome 139 (проверь на https://googlechromelabs.github.io/chrome-for-testing/)
-ENV CHROME_VERSION=139.0.7204.89
-ENV CHROME_URL=https://storage.googleapis.com/chrome-for-testing-public/${CHROME_VERSION}/linux64/chrome-linux64.zip
-ENV CHROMEDRIVER_VERSION=139.0.7204.89
-ENV CHROMEDRIVER_URL=https://storage.googleapis.com/chrome-for-testing-public/${CHROMEDRIVER_VERSION}/linux64/chromedriver-linux64.zip
-
 # --- Установка зависимостей ---
+# --- Установка зависимостей (Chrome + ChromeDriver) ---
 RUN apt-get update && apt-get install -y --no-install-recommends \
     tzdata \
     unzip \
     wget \
     curl \
     ca-certificates \
+    xvfb \
     libnss3 \
     libatk-bridge2.0-0 \
     libdrm2 \
@@ -32,7 +28,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgbm1 \
     libxss1 \
     libasound2 \
-    xvfb \
+    libatk1.0-0 \
+    libcairo2 \
+    libpango-1.0-0 \
+    libgdk-pixbuf2.0-0 \
+    libgtk-3-0 \
+    libcups2 \
+    libdbus-glib-1-2 \
+    libxt6 \
     && rm -rf /var/lib/apt/lists/*
 
 # --- Автоопределение последней версии 139 ---
