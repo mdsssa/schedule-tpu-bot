@@ -269,7 +269,10 @@ def telegramSide():
                 bot.answer_callback_query(call.id)
             elif data.startswith('weekDay_'):
                 dayIndex = int(data.split("_")[1])
+                bot.send_message(chat_id, "Пожалуйста , подождите...")
+                manageMessages(id=chat_id, messageId=call.message.id + 1)
                 sche = webside(day_index= dayIndex , wId= True , id = call.message.chat.id)
+                deleteMessages()
                 if not sche[1]:
                     send_to_logger(sche[0] , isntanexeption = True , id = call.message.chat.id)
                 markup = InlineKeyboardMarkup()
@@ -384,7 +387,7 @@ def telegramSide():
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
                 try:
-                    bot.send_document(chat_id , open('./info.db' , 'rb') , reply_markup=markup)
+                    bot.send_document(chat_id , open('./db/info.db' , 'rb') , reply_markup=markup)
                 except Exception as e:
                     bot.send_message(chat_id , str(e) , reply_markup=markup)
         except Exception as e:

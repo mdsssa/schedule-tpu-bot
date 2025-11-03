@@ -14,13 +14,15 @@ def send_to_logger(e):
 daysOfWeek = ['Понедельник' , "Вторник" , "Среда" , "Четверг" , "Пятница" , "Понедельник"]
 
 def getSpecificDay(data , dayIndex = 0):
-    returnData = []
-    for index in range(len(data)):
-        time = data[index][0]
-        lesson = data[index][dayIndex + 1]
-        returnData.append([time , lesson])
-    return returnData
-
+    try:
+        returnData = []
+        for index in range(len(data)):
+            time = data[index][0]
+            lesson = data[index][dayIndex + 1]
+            returnData.append([time , lesson])
+        return returnData
+    except Exception as e:
+        print(e)
 def isNextPairs(index , element):
         for i in range(6):
             try:
@@ -29,8 +31,24 @@ def isNextPairs(index , element):
             except Exception as e:
                 pass
         return False
+def checkForHolydays(data):
+    try:
+        holyday = False
+        day = 0
+        for i , hour in enumerate(data):
+            for j , subj in enumerate(hour):
+                if "нерабочий" in subj.lower():
+                    holyday = True
+                    day = j
+            if holyday:
+                try:
+                    data[i+1].insert(day , '')
+                except Exception as e:
+                    pass
 
-
+    except Exception as e:
+        pass
+    return data
 def isBackPairs(index , element):
         for i in range(6):
             try:
@@ -52,9 +70,7 @@ def get_driver():
         options=chrome_options
     )
     return driver
-
-
-def webside(day_index = 0 , group = "4А52"  , school = 'ИШНПТ' , course = 1 , wId = False , id = None , forFriend = False , optionsOn = None):
+def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 1 , wId = False , id = None , forFriend = False , optionsOn = None):
     if wId:
         if id != None:
             id , username , course , school , group , sub = getUserInfo(id)
@@ -86,7 +102,9 @@ def webside(day_index = 0 , group = "4А52"  , school = 'ИШНПТ' , course = 
                 cell_texts = [cell.text for cell in cells]
                 data.append(cell_texts)
         now = datetime.datetime.now()
+
         #Форматирование инфы
+        data = checkForHolydays(data)
         dataspec = getSpecificDay(data , day_index)
         count = 0
         to_return = '' + "Специальность : " + speciality + '.'  + '\n' + daysOfWeek[day_index] + '\n'
@@ -121,5 +139,5 @@ def webside(day_index = 0 , group = "4А52"  , school = 'ИШНПТ' , course = 
             pass
         return f'Скорее всего произошла независящая от ваш ошибка , вы можете написать автору и уточнить это. (Ошибка - {e})' , False
 if __name__ == "__main__":
-    #место для проверки функций
+    print(webside())
     pass
