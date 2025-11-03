@@ -4,7 +4,7 @@ import time
 from colorama import Fore
 import os
 #id username course school group sub 
-stPatch = './info.db'
+stPatch = './db/info.db'
 def r(text):
     print(f'{Fore.RED}{text}{Fore.RESET}')
 def g(text):

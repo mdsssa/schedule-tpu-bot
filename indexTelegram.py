@@ -16,6 +16,8 @@ if not os.path.exists("./log.txt"):
         log.write(
             'LOG'
         )
+if not os.path.exists("./db/info.db"):
+    makeDb()
 menuText = 'Вы в главном меню!\nТут есть все , что вам нужно.'
 FriendRegistration = {
 
