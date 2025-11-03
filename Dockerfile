@@ -35,15 +35,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     xvfb \
     && rm -rf /var/lib/apt/lists/*
 
-# --- Установка Chrome 139 вручную (без apt) ---
-RUN wget -q --continue -O /tmp/chrome.zip ${CHROME_URL} \
+# --- Автоопределение последней версии 139 ---
+RUN CHROME_VERSION=$(curl -s https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_139) \
+    && echo "Chrome version: $CHROME_VERSION" \
+    && wget -q -O /tmp/chrome.zip "https://storage.googleapis.com/chrome-for-testing-public/${CHROME_VERSION}/linux64/chrome-linux64.zip" \
     && unzip -q /tmp/chrome.zip -d /opt/ \
     && ln -s /opt/chrome-linux64/chrome /usr/local/bin/chrome \
     && chmod +x /usr/local/bin/chrome \
     && rm /tmp/chrome.zip
 
-# --- Установка ChromeDriver 139 вручную (или через webdriver-manager) ---
-RUN wget -q --continue -O /tmp/chromedriver.zip ${CHROMEDRIVER_URL} \
+# --- ChromeDriver (та же версия) ---
+RUN CHROME_VERSION=$(curl -s https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_139) \
+    && wget -q -O /tmp/chromedriver.zip "https://storage.googleapis.com/chrome-for-testing-public/${CHROME_VERSION}/linux64/chromedriver-linux64.zip" \
     && unzip -q /tmp/chromedriver.zip -d /tmp/ \
     && mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver \
     && chmod +x /usr/local/bin/chromedriver \
