@@ -48,11 +48,7 @@ def get_driver():
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument('--window-size=1920,1080')
     chrome_options.add_argument('--remote-debugging-port=9222')
-
-    # Указываем путь к chromedriver (если не в PATH)
-    # Или просто: webdriver.Chrome(options=chrome_options)
     driver = webdriver.Chrome(
-        executable_path="/usr/local/bin/chromedriver",  # можно опустить, если в PATH
         options=chrome_options
     )
     return driver

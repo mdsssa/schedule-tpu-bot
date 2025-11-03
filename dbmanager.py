@@ -216,5 +216,6 @@ def fixFriendsIds(id):
         print(e)
 if __name__ == '__main__':
     makeDb()
+
     # DateManager(datenow= 12)
     print(checkUserSub(873729188))
