@@ -58,27 +58,15 @@ def get_driver():
     return driver
 
 
-def webside(day_index = 0 , group = "4А52" , optionsOn = True , school = 'ИШНПТ' , course = 1 , wId = False , id = None , forFriend = False):
+def webside(day_index = 0 , group = "4А52"  , school = 'ИШНПТ' , course = 1 , wId = False , id = None , forFriend = False):
     if wId:
         if id != None:
             id , username , course , school , group , sub = getUserInfo(id)
     try:
         day_index = 0 if day_index == 6 else day_index
-        options = webdriver.ChromeOptions()
-        if optionsOn:
-            options.add_argument("-headless=new")
-            options.add_argument('--no-sandbox') 
-            options.add_argument('--disable-dev-shm-usage')
-            options.add_argument('--disable-blink-features=AutomationControlled')  
-            options.add_experimental_option("excludeSwitches", ["enable-automation"]) 
-            options.add_experimental_option('useAutomationExtension', False)
-            options.add_argument('--window-size=1920,1080')  
-            options.add_argument('--disable-gpu')  
-        
+        driver = get_driver()
 
-        #Парсинг
         try:
-            driver = webdriver.Chrome(options= options)
             driver.get('https://ro-rasp.tpu.ru/')
         except Exception as e:
             return f"К сожалению , сейчас невозможно получить информацию с сайта ТПУ😰" , False
