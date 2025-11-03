@@ -6,7 +6,7 @@ import os
 #id username course school group sub 
 stPatch = './db/info.db'
 def r(text):
-    print(f'{Fore.RED}{text}{Fore.RESET}')
+    print(f'{Fore.RED} {text}{Fore.RESET}')
 def g(text):
     print(f'{Fore.GREEN}{text}{Fore.RESET}')
 def b(text):

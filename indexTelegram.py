@@ -14,8 +14,7 @@ import traceback
 if not os.path.exists("./log.txt"):
     with open("./log.txt", "a") as log:
         log.write(
-            'LOG'
-        )
+            'LOG')
 if not os.path.exists("./db/info.db"):
     makeDb()
 menuText = 'Вы в главном меню!\nТут есть все , что вам нужно.'
