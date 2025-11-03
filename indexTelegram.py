@@ -11,6 +11,8 @@ import dotenv
 import string
 import sys
 import traceback
+
+
 if not os.path.exists("./log.txt"):
     with open("./log.txt", "a") as log:
         log.write(
@@ -542,7 +544,7 @@ def distributionSide():
                 for users in same_groups:
                     course , school , group = users.split('_')
                     schedule = webside(day_index = datetime.now().weekday() if datetime.weekday != 6 else 0
-                                        ,  group = group , school= school , course= int(course) , optionsOn= True)
+                                        ,  group = group , school= school , course= int(course))
                     if not schedule[1]:
                         send_to_logger(schedule[0] , isntanexeption = True , id = group)
                     t = f'Отправленно расписание для {school} , {course} курс , группа {group}: {same_groups[users]}'

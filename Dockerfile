@@ -3,14 +3,11 @@ FROM python:3.13.5
 LABEL maintainer="mdssa1337@gmail.com"
 LABEL authors="medisa"
 
-# --- Переменные ---
 ENV TZ=Asia/Tomsk
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV SE_CACHE_PATH=/tmp/selenium-cache
 
-# --- Установка зависимостей ---
-# --- Установка зависимостей (Chrome + ChromeDriver) ---
 RUN apt-get update && apt-get install -y --no-install-recommends \
     tzdata \
     unzip \
@@ -38,7 +35,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxt6 \
     && rm -rf /var/lib/apt/lists/*
 
-# --- Автоопределение последней версии 139 ---
+
 RUN CHROME_VERSION=$(curl -s https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_139) \
     && echo "Chrome version: $CHROME_VERSION" \
     && wget -q -O /tmp/chrome.zip "https://storage.googleapis.com/chrome-for-testing-public/${CHROME_VERSION}/linux64/chrome-linux64.zip" \
@@ -47,7 +44,6 @@ RUN CHROME_VERSION=$(curl -s https://googlechromelabs.github.io/chrome-for-testi
     && chmod +x /usr/local/bin/chrome \
     && rm /tmp/chrome.zip
 
-# --- ChromeDriver (та же версия) ---
 RUN CHROME_VERSION=$(curl -s https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_139) \
     && wget -q -O /tmp/chromedriver.zip "https://storage.googleapis.com/chrome-for-testing-public/${CHROME_VERSION}/linux64/chromedriver-linux64.zip" \
     && unzip -q /tmp/chromedriver.zip -d /tmp/ \
@@ -55,23 +51,22 @@ RUN CHROME_VERSION=$(curl -s https://googlechromelabs.github.io/chrome-for-testi
     && chmod +x /usr/local/bin/chromedriver \
     && rm -rf /tmp/chromedriver.zip /tmp/chromedriver-linux64
 
-# --- Проверка версий ---
+
 RUN chrome --version && chromedriver --version
 
-# --- Настройка времени ---
+
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# --- Рабочая директория ---
+
 WORKDIR /app
 
-# --- Копируем код и зависимости ---
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# --- Пользователь без root ---
+
 RUN groupadd -r appuser && \
     useradd -r -g appuser -d /home/appuser -s /sbin/nologin -c "App User" appuser && \
     mkdir -p /home/appuser && \
@@ -82,5 +77,4 @@ RUN groupadd -r appuser && \
 
 USER appuser
 
-# --- Запуск ---
 CMD ["python", "indexTelegram.py"]
