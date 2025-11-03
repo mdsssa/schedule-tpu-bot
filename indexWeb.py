@@ -5,6 +5,7 @@ from time import sleep
 from schoolsXpathes import findSchoolXPatch
 import datetime
 from dbmanager import *
+from selenium.webdriver.chrome.options import Options
 import traceback
 import sys
 # from indexTelegram import send_to_logger
@@ -39,6 +40,22 @@ def isBackPairs(index , element):
                 pass
         return False
 
+def get_driver():
+    chrome_options = Options()
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+    chrome_options.add_argument('--disable-gpu')
+    chrome_options.add_argument('--window-size=1920,1080')
+    chrome_options.add_argument('--remote-debugging-port=9222')
+
+    # Указываем путь к chromedriver (если не в PATH)
+    # Или просто: webdriver.Chrome(options=chrome_options)
+    driver = webdriver.Chrome(
+        executable_path="/usr/local/bin/chromedriver",  # можно опустить, если в PATH
+        options=chrome_options
+    )
+    return driver
 
 
 def webside(day_index = 0 , group = "4А52" , optionsOn = True , school = 'ИШНПТ' , course = 1 , wId = False , id = None , forFriend = False):
