@@ -1,0 +1,14 @@
+LOG2025-11-03 00:35:36
+0
+Произошла ошибка :'str' object has no attribute 'id'
+Ошибка AttributeError
+На строке 546 ,в функции distributionSide файла /Users/medisa/PycharmProjects/schedule-tpu-bot/indexTelegram.py 
+2025-11-04 00:46:51
+873729188
+cannot unpack non-iterable NoneType object
+2025-11-04 00:48:09
+873729188
+Скорее всего произошла независящая от ваш ошибка , вы можете написать автору и уточнить это. (Ошибка - object of type 'NoneType' has no len())
+2025-11-04 00:49:42
+873729188
+Скорее всего произошла независящая от ваш ошибка , вы можете написать автору и уточнить это. (Ошибка - object of type 'NoneType' has no len())
