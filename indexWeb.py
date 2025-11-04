@@ -8,7 +8,15 @@ from dbmanager import *
 from selenium.webdriver.chrome.options import Options
 import traceback
 import sys
-# from indexTelegram import send_to_logger
+import psutil, os, signal
+
+def kill_zombies():
+    for proc in psutil.process_iter(['name', 'pid']):
+        if proc.name() in ("chrome", "chromedriver", "chrome_crashpad"):
+            try:
+                os.kill(proc.pid, signal.SIGTERM)
+            except Exception as e:
+                print(e)
 def send_to_logger(e):
     pass
 daysOfWeek = ['Понедельник' , "Вторник" , "Среда" , "Четверг" , "Пятница" , 'Суббота' , "Понедельник"]
@@ -127,10 +135,12 @@ def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 
         to_return += text
 
         driver.quit()
+        kill_zombies()
         return to_return , True
     except Exception as e:
         try:
             driver.quit()
+            kill_zombies()
         except:
             pass
         try:
