@@ -11,7 +11,7 @@ import sys
 # from indexTelegram import send_to_logger
 def send_to_logger(e):
     pass
-daysOfWeek = ['Понедельник' , "Вторник" , "Среда" , "Четверг" , "Пятница" , "Понедельник"]
+daysOfWeek = ['Понедельник' , "Вторник" , "Среда" , "Четверг" , "Пятница" , 'Суббота' , "Понедельник"]
 
 def getSpecificDay(data , dayIndex = 0):
     try:
