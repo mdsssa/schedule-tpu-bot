@@ -10,14 +10,22 @@ import traceback
 import sys
 import psutil, os, signal
 
-def kill_zombies():
-    for proc in psutil.process_iter(['name', 'pid']):
-        if proc.name() in ("chrome", "chromedriver", "chrome_crashpad"):
-            try:
-                proc.kill()
-                print(proc.name())
-            except Exception as e:
-                print(e)
+def kill_chrome_processes():
+    for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+        try:
+            # Проверяем имя процесса
+            name = proc.info['name']
+            if name in ('chrome', 'chromedriver' , 'chrome_crashpad'):
+                cmdline = proc.info['cmdline']
+                if cmdline and ('--headless' in ' '.join(cmdline) or 'chromedriver' in name.lower()):
+                    print(f"Убиваем процесс: {name} (PID: {proc.info['pid']})")
+                    proc.terminate()
+                    try:
+                        proc.wait(timeout=3)
+                    except psutil.TimeoutExpired:
+                        proc.kill()
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            pass
 def send_to_logger(e):
     pass
 daysOfWeek = ['Понедельник' , "Вторник" , "Среда" , "Четверг" , "Пятница" , 'Суббота' , "Понедельник"]
@@ -136,13 +144,13 @@ def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 
         to_return += text
 
         driver.quit()
-        sleep(1)
-        kill_zombies()
+        sleep(0.1)
+        kill_chrome_processes()
         return to_return , True
     except Exception as e:
         try:
             driver.quit()
-            kill_zombies()
+            kill_chrome_processes()
         except:
             pass
         try:
