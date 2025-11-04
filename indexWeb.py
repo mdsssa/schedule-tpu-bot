@@ -14,7 +14,7 @@ def kill_zombies():
     for proc in psutil.process_iter(['name', 'pid']):
         if proc.name() in ("chrome", "chromedriver", "chrome_crashpad"):
             try:
-                os.kill(proc.pid, signal.SIGTERM)
+                proc.kill()
                 print(proc.name())
             except Exception as e:
                 print(e)
