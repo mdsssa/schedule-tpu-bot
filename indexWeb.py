@@ -15,6 +15,7 @@ def kill_zombies():
         if proc.name() in ("chrome", "chromedriver", "chrome_crashpad"):
             try:
                 os.kill(proc.pid, signal.SIGTERM)
+                print(proc.name())
             except Exception as e:
                 print(e)
 def send_to_logger(e):
