@@ -75,17 +75,30 @@ def isBackPairs(index , element):
                 pass
         return False
 
+
 def get_driver():
+
     chrome_options = Options()
-    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--headless=new')
     chrome_options.add_argument('--no-sandbox')
     # chrome_options.add_argument('--disable-dev-shm-usage')
-    # chrome_options.add_argument('--no-zygote')
     chrome_options.add_argument('--disable-gpu')
+
     chrome_options.add_argument('--disable-crash-reporter')
+    chrome_options.add_argument('--no-crash-upload')
+    chrome_options.add_argument('--no-report-upload')
+    chrome_options.add_argument('--disable-breakpad')
+    chrome_options.add_argument('--disable-features=CrashReporting')
+    chrome_options.add_argument('--disable-logging')
+
+    chrome_options.add_argument('--no-zygote')
+    chrome_options.add_argument('--single-process')
+    chrome_options.add_argument('--disable-background-timer-throttling')
+
     driver = webdriver.Chrome(
         options=chrome_options
     )
+
     return driver
 def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 1 , wId = False , id = None , forFriend = False , optionsOn = None):
     try:
