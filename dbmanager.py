@@ -135,7 +135,7 @@ def deleteUser(id):
         r(f'Профиль пользователя {id} удален')
     except Exception as e:
         r(f'Произошла ошибка {e} при удалении профиля пользователя {id}')
-def getUserProfile(id):
+def getUserProfile(id , username = None , firstname = None):
     try:
         if not isUserInDb(id):
             return 'У вас нет профиля , пройдите регистрацию коммандой /registration.'
