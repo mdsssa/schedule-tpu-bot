@@ -136,6 +136,7 @@ def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 
         to_return += text
 
         driver.quit()
+        sleep(1)
         kill_zombies()
         return to_return , True
     except Exception as e:
