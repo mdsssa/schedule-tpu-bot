@@ -66,8 +66,6 @@ def get_driver():
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument('--window-size=1920,1080')
     chrome_options.add_argument('--remote-debugging-port=9222')
-    chrome_options.add_argument(
-        '--disable-features=ImprovedCookieControls,LazyFrameLoading,GlobalMediaControls,DestroyProfileOnBrowserClose,MediaRouter')
     chrome_options.add_argument('--disable-crash-reporter')
     driver = webdriver.Chrome(
         options=chrome_options
