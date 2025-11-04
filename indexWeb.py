@@ -71,10 +71,10 @@ def get_driver():
     )
     return driver
 def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 1 , wId = False , id = None , forFriend = False , optionsOn = None):
-    if wId:
-        if id != None:
-            id , username , course , school , group , sub = getUserInfo(id)
     try:
+        if wId:
+            if id != None:
+                id, username, course, school, group, sub = getUserInfo(id)
         day_index = 0 if day_index == 6 else day_index
         driver = get_driver()
 
