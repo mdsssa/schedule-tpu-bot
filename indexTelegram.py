@@ -567,28 +567,29 @@ def distributionSide():
     while True:
         try:
             current_day = datetime.now().day
-            if DateManager(datenow= current_day + 1):
-                users = getAllSubscribedUsers()
-                same_groups = findUsersWithTheSameSchedule(users)
-                for users in same_groups:
-                    course , school , group = users.split('_')
-                    schedule = webside(day_index = datetime.now().weekday() if datetime.weekday != 6 else 0
-                                        ,  group = group , school= school , course= int(course))
-                    if not schedule[1]:
-                        send_to_logger(schedule[0] , isntanexeption = True , id = group)
-                    t = f'Отправленно расписание для {school} , {course} курс , группа {group}: {same_groups[users]}'
-                    for user in same_groups[users]:
-                        markup = InlineKeyboardMarkup()
-                        try:
-                            markup.add(InlineKeyboardButton("Удалить это сообщение" , callback_data = 'None'))
-                        except Exception as e:
-                            send_to_logger(e , user.id)
-                        try:
-                            bot.send_message(user , f'Расписание для {school} , {course} курс , группа {group}:\n\n{schedule[0]}' , reply_markup= markup)
-                        except Exception as e:
-                            send_to_logger(e , user)
-                    send_to_logger(t , justInfo = True)
-            time.sleep(60 * checkFrequency)
+            if DateManager(datenow= current_day):
+            #     users = getAllSubscribedUsers()
+            #     same_groups = findUsersWithTheSameSchedule(users)
+            #     for users in same_groups:
+            #         course , school , group = users.split('_')
+            #         schedule = webside(day_index = datetime.now().weekday() if datetime.weekday != 6 else 0
+            #                             ,  group = group , school= school , course= int(course))
+            #         if not schedule[1]:
+            #             send_to_logger(schedule[0] , isntanexeption = True , id = group)
+            #         t = f'Отправленно расписание для {school} , {course} курс , группа {group}: {same_groups[users]}'
+            #         for user in same_groups[users]:
+            #             markup = InlineKeyboardMarkup()
+            #             try:
+            #                 markup.add(InlineKeyboardButton("Удалить это сообщение" , callback_data = 'None'))
+            #             except Exception as e:
+            #                 send_to_logger(e , user.id)
+            #             try:
+            #                 bot.send_message(user , f'Расписание для {school} , {course} курс , группа {group}:\n\n{schedule[0]}' , reply_markup= markup)
+            #             except Exception as e:
+            #                 send_to_logger(e , user)
+            #         send_to_logger(t , justInfo = True)
+            # time.sleep(60 * checkFrequency)
+                bot.send_message(loggerChat , 'все норм братиш')
         except Exception as e:
             send_to_logger(e)
 Thread(target = telegramSide).start()
