@@ -88,12 +88,14 @@ def makeMarkupWithLayout(layout:dict):
 def generateMenu(id):
     try:
         markup = InlineKeyboardMarkup()
+        markup.add(InlineKeyboardButton('Расписание на сегодня' , callback_data='schedule_today'))
         profileb = InlineKeyboardButton(text="Профиль", callback_data="profile")
         friendsb = InlineKeyboardButton(text="Друзья", callback_data="friends")
         markup.row(profileb , friendsb)
         markup.add(InlineKeyboardButton("Расписание" , callback_data="schedule"))
         if str(id) in admins:
             markup.add(InlineKeyboardButton('Админское меню' , callback_data="adminMenu"))
+        markup.add(InlineKeyboardButton('Больше информации о проекте' , callback_data="extra_info"))
         return markup
     except Exception as e:
         send_to_logger(e , id)
@@ -215,9 +217,13 @@ def telegramSide():
         try:
             markup = InlineKeyboardMarkup()
             markup.row_width = 3
+            now = datetime.now().weekday()
             for i, weekDay in enumerate(daysOfWeek["rus"]):
+                if i == now:
+                    weekDay += ' (Сегодня)'
                 markup.add(InlineKeyboardButton(weekDay.capitalize() , callback_data=f"{f"weekDay_{i}" if not forFriend else f'FweekDay_{i}_{id}_{friend_index}'}"))
             markup.add(InlineKeyboardButton('Вернуться в меню' , callback_data=f"menu"))
+
             return markup
         except Exception as e:
             send_to_logger(e)
@@ -390,6 +396,20 @@ def telegramSide():
                     bot.send_document(chat_id , open('./db/info.db' , 'rb') , reply_markup=markup)
                 except Exception as e:
                     bot.send_message(chat_id , str(e) , reply_markup=markup)
+            elif data == 'schedule_today':
+                now = datetime.now().weekday()
+                bot.send_message(chat_id, 'Пожалуйста , подождите...')
+                manageMessages(chat_id, call.message.id + 1)
+                sche , ex = webside(day_index=now , wId= True , id= chat_id)
+                if not ex:
+                    send_to_logger(sche , chat_id)
+                markup = InlineKeyboardMarkup()
+                markup.add(InlineKeyboardButton('Вернуться в меню' , callback_data = 'menu'))
+                bot.send_message(chat_id , sche , reply_markup=markup)
+            elif data == 'extra_info':
+                markup = InlineKeyboardMarkup()
+                markup.add(InlineKeyboardButton('Вернуться в меню', callback_data='menu'))
+                bot.send_message(chat_id , "Эта вкладка находится в разработке , но скоро все будет готово!" , reply_markup=markup)
         except Exception as e:
             send_to_logger(e , call.message.chat.id)
 
@@ -547,7 +567,7 @@ def distributionSide():
     while True:
         try:
             current_day = datetime.now().day
-            if DateManager(datenow= current_day):
+            if DateManager(datenow= current_day + 1):
                 users = getAllSubscribedUsers()
                 same_groups = findUsersWithTheSameSchedule(users)
                 for users in same_groups:
@@ -563,7 +583,10 @@ def distributionSide():
                             markup.add(InlineKeyboardButton("Удалить это сообщение" , callback_data = 'None'))
                         except Exception as e:
                             send_to_logger(e , user.id)
-                        bot.send_message(user , f'Расписание для {school} , {course} курс , группа {group}:\n\n{schedule[0]}' , reply_markup= markup)
+                        try:
+                            bot.send_message(user , f'Расписание для {school} , {course} курс , группа {group}:\n\n{schedule[0]}' , reply_markup= markup)
+                        except Exception as e:
+                            send_to_logger(e , user)
                     send_to_logger(t , justInfo = True)
             time.sleep(60 * checkFrequency)
         except Exception as e:
