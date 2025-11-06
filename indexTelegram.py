@@ -522,7 +522,6 @@ def telegramSide():
     @bot.message_handler(commands= ['menu'])
     def menu(message:telebot) -> None:
         manageMessages(id=message.from_user.id, messageId=message.id - 1)
-        text = ''
         bot.send_message(message.from_user.id , text = menuText  , reply_markup= generateMenu(message.from_user.id))
     @bot.message_handler(commands= daysOfWeek["rus"] + daysOfWeek["eng"])    
     def LastHandler(message) -> None:
