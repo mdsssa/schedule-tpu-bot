@@ -418,11 +418,19 @@ def telegramSide():
             elif data == 'donate_req':
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton('Вернуться в меню', callback_data='menu'))
-                buffer = BytesIO()
-                qr = qrcode.make(donate_link)
-                qr.save(buffer, format='PNG')
-                buffer.seek(0)
-                bot.send_photo(chat_id , photo=buffer , caption= f'Вы можете поддержать нас копеечкой по ссылке⬇️ или по QR⬆️\n{donate_link}', reply_markup=markup)
+                try:
+                    buffer = BytesIO()
+                    qr = qrcode.make(donate_link)
+                    qr.save(buffer, format='PNG')
+                    buffer.seek(0)
+                except Exception as e:
+                    pass
+                # bot.send_photo(chat_id , photo=buffer , caption= f'Вы можете поддержать нас копеечкой по ссылке⬇️ или по QR⬆️\n{donate_link}', reply_markup=markup)
+                try:
+                    bot.send_photo(chat_id , open('./qr.jpeg') , reply_markup=markup , caption=  f'Вы можете поддержать нас копеечкой по ссылке⬇️ или по QR⬆️\n{donate_link}')
+                except Exception as e:
+                    send_to_logger(chat_id , e)
+                    bot.send_message(chat_id ,  f'Вы можете поддержать нас копеечкой по ссылке⬇️\n{donate_link}' , reply_markup=markup)
         except Exception as e:
             send_to_logger(e , call.message.chat.id)
 
