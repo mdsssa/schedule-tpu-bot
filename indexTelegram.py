@@ -11,7 +11,10 @@ import dotenv
 import string
 import sys
 import traceback
+import qrcode
+from io import BytesIO
 
+donate_link = 'https://dalink.to/medisssa'
 
 if not os.path.exists("./log.txt"):
     with open("./log.txt", "a") as log:
@@ -409,8 +412,17 @@ def telegramSide():
                 deleteMessages()
             elif data == 'extra_info':
                 markup = InlineKeyboardMarkup()
+                markup.add(InlineKeyboardButton("Поддержать проект донатом" , callback_data = 'donate_req'))
                 markup.add(InlineKeyboardButton('Вернуться в меню', callback_data='menu'))
-                bot.send_message(chat_id , "Эта вкладка находится в разработке , но скоро все будет готово!" , reply_markup=markup)
+                bot.send_message(chat_id , "У нас есть канал в телеграме!\nТам выкладываются новости бота , а так же там вы можете оставлять свои идеи по улучшению проекта👨‍💻\n@scheduletpunews" , reply_markup=markup)
+            elif data == 'donate_req':
+                markup = InlineKeyboardMarkup()
+                markup.add(InlineKeyboardButton('Вернуться в меню', callback_data='menu'))
+                buffer = BytesIO()
+                qr = qrcode.make(donate_link)
+                qr.save(buffer, format='PNG')
+                buffer.seek(0)
+                bot.send_photo(chat_id , photo=buffer , caption= f'Вы можете поддержать нас копеечкой по ссылке⬇️ или по QR⬆️\n{donate_link}', reply_markup=markup)
         except Exception as e:
             send_to_logger(e , call.message.chat.id)
 
@@ -529,6 +541,12 @@ def telegramSide():
         except Exception as e:
             send_to_logger(e , message.from_user.id)
         deleteMessages()
+    @bot.message_handler(content_types= ['photo'])
+    def getdonateQr(message):
+        if str(message.chat.id) in admins:
+            if str(message.caption).lower() == 'qr':
+                with open('qr.jpg', 'rb') as f:
+                    pass
     @bot.message_handler()
     def getName(message):
         manageMessages(id=message.from_user.id, messageId=message.id - 1)
