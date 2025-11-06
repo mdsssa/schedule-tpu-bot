@@ -406,6 +406,7 @@ def telegramSide():
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton('Вернуться в меню' , callback_data = 'menu'))
                 bot.send_message(chat_id , sche , reply_markup=markup)
+                deleteMessages()
             elif data == 'extra_info':
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton('Вернуться в меню', callback_data='menu'))
