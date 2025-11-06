@@ -427,7 +427,7 @@ def telegramSide():
                     pass
                 # bot.send_photo(chat_id , photo=buffer , caption= f'Вы можете поддержать нас копеечкой по ссылке⬇️ или по QR⬆️\n{donate_link}', reply_markup=markup)
                 try:
-                    bot.send_photo(chat_id , open('./qr.jpeg') , reply_markup=markup , caption=  f'Вы можете поддержать нас копеечкой по ссылке⬇️ или по QR⬆️\n{donate_link}')
+                    bot.send_photo(chat_id , open('/usr/medissa/schedule.tpu.bot/qr.jpeg' , 'rb') , reply_markup=markup , caption=  f'Вы можете поддержать нас копеечкой по ссылке⬇️ или по QR⬆️\n{donate_link}')
                 except Exception as e:
                     send_to_logger(chat_id , e)
                     bot.send_message(chat_id ,  f'Вы можете поддержать нас копеечкой по ссылке⬇️\n{donate_link}' , reply_markup=markup)
