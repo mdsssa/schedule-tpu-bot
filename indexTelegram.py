@@ -1,7 +1,7 @@
 import telebot
 if __name__ == '__main__':
     from indexWeb import webside
-from schoolsXpathes import schools
+from schoolsXpathes import schools, entry_art
 from dbmanager import *
 from datetime import datetime
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
@@ -15,7 +15,7 @@ import qrcode
 from io import BytesIO
 
 donate_link = 'https://dalink.to/medisssa'
-
+print(entry_art)
 if not os.path.exists("./log.txt"):
     with open("./log.txt", "a") as log:
         log.write(
