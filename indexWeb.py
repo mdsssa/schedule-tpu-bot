@@ -111,16 +111,23 @@ def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 
         try:
             driver.get('https://ro-rasp.tpu.ru/')
         except Exception as e:
+            print(e)
             return f"К сожалению , сейчас невозможно получить информацию с сайта ТПУ😰\nЭта ошибка обычно единичная и больше не повторяется , попробуйте еще раз!" , False
 
         try:
+            try:
+                group = group.upper()
+            except Exception as e:
+                print(e)
+                pass
             driver.find_element(By.XPATH , str(findSchoolXPatch(school=school))).click()
             driver.find_element(By.XPATH, f"//*[contains(text(), '{course} курс')]").click()
-            driver.find_element(By.XPATH, f"//*[contains(text(), '{group.upper()}')]").click()
+            driver.find_element(By.XPATH, f"//*[contains(text(), '{group}')]").click()
             speciality = driver.find_element(By.XPATH , '/html/body/div[2]/div/div/div[2]/div[1]/div[2]/div/div[1]/div[2]/ul/li[1]/a').text
             schedule = driver.find_element(By.XPATH , '/html/body/div[2]/div/div/div[2]/div[3]/table')
             rows = schedule.find_elements(By.TAG_NAME, 'tr')
         except Exception as e:
+            print(e)
             return ("Вы ввели неправильные данные при регистрации. Свои данные вы можете просмотреть командой /profile , или пройти повторную регестрацию коммандой /registration" , False) if not forFriend else ("Вы ввели неправильные данные при регистрации друга!\nПопробуйте добавить его заново во вкладке «Друзья»" , False)
 
 
@@ -161,9 +168,11 @@ def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 
         kill_chrome_processes()
         return to_return , True
     except Exception as e:
+        print(e)
         try:
             driver.quit()
             kill_chrome_processes()
+            print(e)
         except:
             pass
         try:
@@ -171,6 +180,6 @@ def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 
         except: 
             pass
         return f'Скорее всего произошла независящая от вас ошибка , вы можете написать автору и уточнить это. (Ошибка - {e})' , False
+
 if __name__ == "__main__":
-    print(webside())
     pass
