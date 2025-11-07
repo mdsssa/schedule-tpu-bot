@@ -601,7 +601,7 @@ def distributionSide():
     while True:
         try:
             current_day = datetime.now().day
-            if DateManager(datenow= current_day+1):
+            if DateManager(datenow= current_day):
                 users = getAllSubscribedUsers()
                 same_groups = findUsersWithTheSameSchedule(users)
                 for users in same_groups:
