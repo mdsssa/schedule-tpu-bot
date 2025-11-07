@@ -106,7 +106,12 @@ def findUsersWithTheSameSchedule(users) -> dict:
     try:
         groupsandUsers = {}
         for i in range(len(users)):
-            if f'{str(users[i][2])}_{users[i][3]}_{users[i][4].upper()}' not in groupsandUsers.keys():
+            group = users[i][4]
+            try:
+                group = group.upper()
+            except Exception as e:
+                print(e)
+            if f'{str(users[i][2])}_{users[i][3]}_{group}' not in groupsandUsers.keys():
                 groupsandUsers[f'{str(users[i][2])}_{users[i][3]}_{users[i][4].upper()}'] = [users[i][0]]
             else:
                 groupsandUsers[f'{str(users[i][2])}_{users[i][3]}_{users[i][4].upper()}'].append(users[i][0])
@@ -596,7 +601,7 @@ def distributionSide():
     while True:
         try:
             current_day = datetime.now().day
-            if DateManager(datenow= current_day):
+            if DateManager(datenow= current_day+1):
                 users = getAllSubscribedUsers()
                 same_groups = findUsersWithTheSameSchedule(users)
                 for users in same_groups:
