@@ -200,7 +200,7 @@ def telegramSide():
                         markup.row_width = 1
                         markup.add(InlineKeyboardButton(f'{int(friends[-1]) + 1}.{friends[1]} , {friends[-2]}', callback_data=f"friend_{id}_{friends[-1]}"))
                     markup.add(InlineKeyboardButton("Удалить друга" , callback_data=f"friend_delete"))
-                if len(friends1) <= int(friendsCount):
+                if len(friends1) < int(friendsCount):
                     markup.add(InlineKeyboardButton("Добавить друга" , callback_data=f"friend_add"))
             markup.add(InlineKeyboardButton("Вернуться в меню" , callback_data=f"menu"))
             return markup , len(friends1)
@@ -308,8 +308,11 @@ def telegramSide():
             #     markup.add(InlineKeyboardButton("Удалить друга" , callback_data=f"{id}_friend_delete"))
             # markup.add(InlineKeyboardButton("Добавить друга" , callback_data=f"{id}_friend_add"))
             elif data == f"friend_add":
-                FriendRegistration[f'{chat_id}'] = {"id" : chat_id}
-                bot.send_message(chat_id, "Какой курс у твоего друга?" , reply_markup=gen_course_markup(chat_id , True))
+                if len(getfriends(chat_id)) < int(friendsCount):
+                    FriendRegistration[f'{chat_id}'] = {"id" : chat_id}
+                    bot.send_message(chat_id, "Какой курс у твоего друга?" , reply_markup=gen_course_markup(chat_id , True))
+                else:
+                    bot.send_message(chat_id , 'У вас максимальное количество друзей!' , reply_markup=gen_friends_markup(chat_id))
             elif data.startswith("Fcourse_"):
                 course = data.split("_")[1]
                 FriendRegistration[f'{chat_id}']['course'] = course
