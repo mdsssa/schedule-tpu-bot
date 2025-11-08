@@ -7,7 +7,7 @@ def findSchoolXPatch(school):
         if schools[index].lower() == school.lower():
             return template + f'[{index + 1}]'
 
-entry_art = """
+entry_art = r"""
                                ,--,                  
   .--.--.     ,----..        ,--.'|                  
  /  /    '.  /   /   \    ,--,  | :                  
