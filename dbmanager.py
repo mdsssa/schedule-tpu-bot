@@ -30,7 +30,8 @@ def DateManager(datenow:int = 0) -> int:
         db = sql.connect(stPatch)
         cursor = db.cursor()
         cursor.execute('SELECT * FROM date')
-        a = cursor.fetchall()[0][0]
+        a = cursor.fetchall()
+        a = a[0][0]
         if datenow == a:
             db.close()
             return False

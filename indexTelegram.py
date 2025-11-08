@@ -614,7 +614,9 @@ def distributionSide():
                     for user in same_groups[users]:
                         markup = InlineKeyboardMarkup()
                         try:
+                            markup.add(InlineKeyboardButton('Отписаться от рассылки' , callback_data = 'unsub'))
                             markup.add(InlineKeyboardButton("Удалить это сообщение" , callback_data = 'None'))
+
                         except Exception as e:
                             send_to_logger(e , user.id)
                         try:
