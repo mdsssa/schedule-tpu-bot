@@ -381,8 +381,14 @@ def telegramSide():
                 markup.add(InlineKeyboardButton("LOG", callback_data=f"log"))
                 markup.add(InlineKeyboardButton('UPDATE LOG', callback_data=f"updatelog"))
                 markup.add(InlineKeyboardButton('GET DB' , callback_data = 'getdb'))
+                markup.add(InlineKeyboardButton('USERS COUNT' , callback_data = 'cusers'))
                 markup.add(InlineKeyboardButton('BACK TO THE MENU' , callback_data=f"menu"))
                 bot.send_message(chat_id , 'ADMIN MENU', reply_markup=markup)
+            elif data == 'cusers':
+                markup = InlineKeyboardMarkup()
+                markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
+                count = len(get_users())
+                bot.send_message(chat_id, f'users : {count}', reply_markup=markup)
             elif data == 'log':
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))

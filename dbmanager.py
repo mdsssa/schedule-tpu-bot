@@ -125,7 +125,16 @@ def checkUserSub(id):
         return bool(a)
     except Exception as e:
         r(f"При проверке подписки пользователя произошла ошибка: {e}")
-
+def get_users():
+    try:
+        db = sql.connect(stPatch)
+        cursor = db.cursor()
+        info = cursor.execute('SELECT * FROM users')
+        a = cursor.fetchall()
+        db.close()
+        return a
+    except Exception as e:
+        print(e)
 def deleteUser(id):
     try:
         db = sql.connect(stPatch)
