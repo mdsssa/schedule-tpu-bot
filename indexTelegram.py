@@ -629,7 +629,6 @@ def distributionSide():
                         try:
                             bot.send_message(user , f'Расписание для {school} , {course} курс , группа {group}:\n\n{schedule[0]}' , reply_markup= markup)
                         except Exception as e:
-                            print(str(e))
                             if str(e).lower() == 'A request to the Telegram API was unsuccessful. Error code: 403. Description: Forbidden: bot was blocked by the user'.lower():
                                 deleteUser(user)
                             send_to_logger(e , user)
