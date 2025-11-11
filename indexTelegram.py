@@ -13,7 +13,7 @@ import sys
 import traceback
 import qrcode
 from io import BytesIO
-
+makeDb()
 donate_link = 'https://dalink.to/medisssa'
 print(entry_art)
 if not os.path.exists("./log.txt"):
