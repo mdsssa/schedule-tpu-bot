@@ -382,6 +382,7 @@ def telegramSide():
                 markup.add(InlineKeyboardButton('UPDATE LOG', callback_data=f"updatelog"))
                 markup.add(InlineKeyboardButton('GET DB' , callback_data = 'getdb'))
                 markup.add(InlineKeyboardButton('USERS COUNT' , callback_data = 'cusers'))
+                markup.add(InlineKeyboardButton('USES COUNT' , callback_data= 'getUsers'))
                 markup.add(InlineKeyboardButton('BACK TO THE MENU' , callback_data=f"menu"))
                 bot.send_message(chat_id , 'ADMIN MENU', reply_markup=markup)
             elif data == 'cusers':
@@ -445,6 +446,12 @@ def telegramSide():
                 except Exception as e:
                     send_to_logger(chat_id , e)
                     bot.send_message(chat_id ,  f'Вы можете поддержать нас копеечкой по ссылке⬇️\n{donate_link}' , reply_markup=markup)
+            elif data == 'getUsers':
+                markup = InlineKeyboardMarkup()
+                markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
+                bot.send_message(chat_id , f'Число уникальных юзеров {get_unique()} , использований вообще - {get_usersUse()}' , reply_markup=markup)
+            update_users(chat_id)
+
         except Exception as e:
             send_to_logger(e , call.message.chat.id)
 
@@ -608,6 +615,8 @@ def distributionSide():
         try:
             current_day = datetime.now().day
             if DateManager(datenow= current_day):
+                bot.send_message(loggerChat , f'Уникальных юзеров: {get_unique()} , юзеров : {get_usersUse()}')
+                clearUsers()
                 users = getAllSubscribedUsers()
                 same_groups = findUsersWithTheSameSchedule(users)
                 for users in same_groups:

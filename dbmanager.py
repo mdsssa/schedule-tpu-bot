@@ -14,8 +14,56 @@ def b(text):
 tables = {
     'date' : '(date integer)' ,
     'users' : "(id integer , username string , course integer , school string , 'group' string , sub integer)" ,
-    'Friends' : "(id integer , friendName string , friendcourse integer , friendschool string , friendgroup string , Friendid integer)"
+    'Friends' : "(id integer , friendName string , friendcourse integer , friendschool string , friendgroup string , Friendid integer)" ,
+    'todayUsers' : "(uses integer , isUnuque integer)"
 }
+
+def update_users(id):
+    try:
+        db = sql.connect(stPatch)
+        cursor = db.cursor()
+        cursor.execute('''SELECT * FROM todayUsers WHERE uses = ?''', (id , ))
+        user_uses = cursor.fetchall()
+        cursor.execute('''INSERT INTO todayUsers VALUES (? , ?)''', (id , 1 if len(user_uses) == 0 else 0))
+        db.commit()
+        db.close()
+    except Exception as e:
+        print(e)
+
+
+def get_unique():
+    try:
+        db = sql.connect(stPatch)
+        cursor = db.cursor()
+        cursor.execute('''SELECT * FROM todayUsers WHERE isUnuque = 1''', )
+        a = cursor.fetchall()
+        db.close()
+        return len(a)
+    except Exception as e:
+        print(e)
+        return 0
+
+def get_usersUse():
+    try:
+        db = sql.connect(stPatch)
+        cursor = db.cursor()
+        cursor.execute('''SELECT * FROM todayUsers''', )
+        a = cursor.fetchall()
+        db.close()
+        return len(a)
+    except Exception as e:
+        print(e)
+        return 0
+
+def clearUsers():
+    try:
+        db = sql.connect(stPatch)
+        cursor = db.cursor()
+        cursor.execute('''DELETE FROM todayUsers''')
+        db.commit()
+        db.close()
+    except Exception as e:
+        print(e)
 def makeDb():
     try:
         for table in tables:
@@ -226,6 +274,7 @@ def fixFriendsIds(id):
         print(e)
 if __name__ == '__main__':
     makeDb()
-
-    # DateManager(datenow= 12)
     print(checkUserSub(873729188))
+    for i in range(10):
+        update_users(873729188)
+    clearUsers()
