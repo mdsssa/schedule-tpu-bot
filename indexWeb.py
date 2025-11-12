@@ -9,7 +9,7 @@ from selenium.webdriver.chrome.options import Options
 import traceback
 import sys
 import psutil, os, signal
-
+from getScheduleTable import get_schedule_week
 def kill_chrome_processes():
     for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
         try:
@@ -75,7 +75,6 @@ def isBackPairs(index , element):
                 pass
         return False
 
-
 def get_driver():
 
     chrome_options = Options()
@@ -100,7 +99,7 @@ def get_driver():
     )
 
     return driver
-def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 1 , wId = False , id = None , forFriend = False , optionsOn = None):
+def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 1 , wId = False , id = None , forFriend = False , optionsOn = None , allweek = False):
     try:
         if wId:
             if id != None:
@@ -124,6 +123,7 @@ def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 
             driver.find_element(By.XPATH, f"//*[contains(text(), '{course} курс')]").click()
             driver.find_element(By.XPATH, f"//*[contains(text(), '{group}')]").click()
             speciality = driver.find_element(By.XPATH , '/html/body/div[2]/div/div/div[2]/div[1]/div[2]/div/div[1]/div[2]/ul/li[1]/a').text
+            week = driver.find_element(By.XPATH , '/html/body/div[2]/div/div/div[2]/h4').text
             schedule = driver.find_element(By.XPATH , '/html/body/div[2]/div/div/div[2]/div[3]/table')
             rows = schedule.find_elements(By.TAG_NAME, 'tr')
         except Exception as e:
@@ -142,6 +142,8 @@ def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 
 
         #Форматирование инфы
         data = checkForHolydays(data)
+        if allweek:
+            return get_schedule_week(title= week , schedule_data=data)
         dataspec = getSpecificDay(data , day_index)
         count = 0
         to_return = '' + "Специальность : " + speciality + '.'  + '\n' + daysOfWeek[day_index] + '\n'

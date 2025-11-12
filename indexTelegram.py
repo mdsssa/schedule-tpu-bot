@@ -383,6 +383,7 @@ def telegramSide():
                 markup.add(InlineKeyboardButton('GET DB' , callback_data = 'getdb'))
                 markup.add(InlineKeyboardButton('USERS COUNT' , callback_data = 'cusers'))
                 markup.add(InlineKeyboardButton('USES COUNT' , callback_data= 'getUsers'))
+                markup.add(InlineKeyboardButton('TEST' , callback_data = 'test'))
                 markup.add(InlineKeyboardButton('BACK TO THE MENU' , callback_data=f"menu"))
                 bot.send_message(chat_id , 'ADMIN MENU', reply_markup=markup)
             elif data == 'cusers':
@@ -450,6 +451,9 @@ def telegramSide():
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
                 bot.send_message(chat_id , f'Число уникальных юзеров {get_unique()} , использований вообще - {get_usersUse()}' , reply_markup=markup)
+            elif data == 'test':
+                bot.send_photo(chat_id,webside(allweek=True , wId= True , id= chat_id))
+
             update_users(chat_id)
 
         except Exception as e:
