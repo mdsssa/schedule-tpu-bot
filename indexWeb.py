@@ -9,7 +9,6 @@ from selenium.webdriver.chrome.options import Options
 import traceback
 import sys
 import psutil, os, signal
-from getScheduleTable import get_schedule_week
 from PIL import Image, ImageDraw, ImageFont
 import textwrap
 import os
