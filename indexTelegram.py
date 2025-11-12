@@ -98,6 +98,7 @@ def generateMenu(id):
         markup.add(InlineKeyboardButton("Расписание" , callback_data="schedule"))
         if str(id) in admins:
             markup.add(InlineKeyboardButton('Админское меню' , callback_data="adminMenu"))
+        markup.add(InlineKeyboardButton('Расписание на всю неделю', callback_data='schedule_week'))
         markup.add(InlineKeyboardButton('Больше информации о проекте' , callback_data="extra_info"))
         return markup
     except Exception as e:
@@ -453,7 +454,10 @@ def telegramSide():
                 bot.send_message(chat_id , f'Число уникальных юзеров {get_unique()} , использований вообще - {get_usersUse()}' , reply_markup=markup)
             elif data == 'test':
                 bot.send_photo(chat_id,webside(allweek=True , wId= True , id= chat_id))
-
+            elif data == 'schedule_week':
+                markup = InlineKeyboardMarkup()
+                markup.add(InlineKeyboardButton('Вернуться в меню', callback_data='menu'))
+                bot.send_photo(chat_id, webside(allweek=True, wId=True, id=chat_id) , reply_markup= markup)
             update_users(chat_id)
 
         except Exception as e:
