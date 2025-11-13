@@ -99,7 +99,7 @@ def generateMenu(id):
         if str(id) in admins:
             markup.add(InlineKeyboardButton('Админское меню' , callback_data="adminMenu"))
         markup.add(InlineKeyboardButton('Расписание на всю неделю', callback_data='schedule_week'))
-        markup.add(InlineKeyboardButton('Больше информации о проекте' , callback_data="extra_info"))
+        markup.add(InlineKeyboardButton('🔹Больше информации о проекте🔹' , callback_data="extra_info"))
         return markup
     except Exception as e:
         send_to_logger(e , id)
