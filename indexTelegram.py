@@ -131,9 +131,9 @@ def telegramSide():
             markup.row_width = 3
             sub = checkUserSub(id)
             if sub:
-                markup.add(InlineKeyboardButton("Отписаться от рассылки", callback_data=f"unsub"))
+                markup.add(InlineKeyboardButton("Отписаться от рассылки❌", callback_data=f"unsub"))
             else:
-                markup.add(InlineKeyboardButton("Подписаться на рассылку", callback_data=f"sub"))
+                markup.add(InlineKeyboardButton("Подписаться на рассылку✅", callback_data=f"sub"))
             markup.add(InlineKeyboardButton("Вернуться в меню" , callback_data= "menu"))
             markup.add(InlineKeyboardButton("Удалить это сообщение" , callback_data = 'None'))
             return markup , sub
