@@ -10,7 +10,7 @@ def get_schedule_week(title, schedule_data):
     BG_COLOR = (0, 0, 0)
     TEXT_COLOR = (255, 255, 255)
     GRID_COLOR = (90, 90, 90)
-    TITLE = "Расписание занятий"
+    TITLE = title
     WATERMARK = "©TELEGRAM @schedule_tpu_bot "
     CELL_FONT_SIZE = 18
     MIN_ROW_HEIGHT = 90
@@ -39,9 +39,7 @@ def get_schedule_week(title, schedule_data):
                         return font
                 except:
                     continue
-        # Fallback
-        print("Используется fallback шрифт (без кириллицы)")
-        return ImageFont.load_default(size=size)
+        # Fallback     return ImageFont.load_default(size=size)
 
     title_font = get_font(68)
     cell_font = get_font(CELL_FONT_SIZE)

@@ -91,14 +91,14 @@ def makeMarkupWithLayout(layout:dict):
 def generateMenu(id):
     try:
         markup = InlineKeyboardMarkup()
-        markup.add(InlineKeyboardButton('Расписание на сегодня' , callback_data='schedule_today'))
-        profileb = InlineKeyboardButton(text="Профиль", callback_data="profile")
-        friendsb = InlineKeyboardButton(text="Друзья", callback_data="friends")
+        markup.add(InlineKeyboardButton('Расписание на сегодня📆' , callback_data='schedule_today'))
+        profileb = InlineKeyboardButton(text="Профиль👤", callback_data="profile")
+        friendsb = InlineKeyboardButton(text="Друзья👥", callback_data="friends")
         markup.row(profileb , friendsb)
-        markup.add(InlineKeyboardButton("Расписание" , callback_data="schedule"))
+        markup.add(InlineKeyboardButton("Расписание📚" , callback_data="schedule"))
         if str(id) in admins:
-            markup.add(InlineKeyboardButton('Админское меню' , callback_data="adminMenu"))
-        markup.add(InlineKeyboardButton('Расписание на всю неделю', callback_data='schedule_week'))
+            markup.add(InlineKeyboardButton('Админское меню📦' , callback_data="adminMenu"))
+        markup.add(InlineKeyboardButton('Расписание на всю неделю📄', callback_data='schedule_week'))
         markup.add(InlineKeyboardButton('🔹Больше информации о проекте🔹' , callback_data="extra_info"))
         return markup
     except Exception as e:
@@ -121,10 +121,6 @@ def findUsersWithTheSameSchedule(users) -> dict:
         send_to_logger(e)
 
 def telegramSide():
-    messages = {
-        "greeting": 'Привет'
-    }
-
     s = ["Бизнес-школа" , "ИШИнЭс" , "ИШИТР" , "ИШНКБ" , "ИШНПТ" , "ИШПР" , 
             "ИШЭ" , "ИЯТШ" , "ИШФВП" , "ИШХБМТ" , 'УН' , "УОД" , "ШОН"]
 
