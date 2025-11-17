@@ -268,7 +268,10 @@ def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 
         #Форматирование инфы
         data = checkForHolydays(data)
         if allweek:
-            return get_schedule_week(title= week , schedule_data=data)
+            try:
+                return get_schedule_week(title= week , schedule_data=data)
+            except Exception:
+                return f"К сожалению , сейчас невозможно получить информацию с сайта ТПУ😰\nЭта ошибка обычно единичная и больше не повторяется , попробуйте еще раз!", False
         dataspec = getSpecificDay(data , day_index)
         count = 0
         to_return = '' + "Специальность : " + speciality + '.'  + '\n' + daysOfWeek[day_index] + '\n'
