@@ -138,12 +138,12 @@ def get_schedule_week(title, schedule_data):
 def kill_chrome_processes():
     for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
         try:
-            # Проверяем имя процесса
+
             name = proc.info['name']
             if name in ('chrome', 'chromedriver' , 'chrome_crashpad'):
                 cmdline = proc.info['cmdline']
                 if cmdline and ('--headless' in ' '.join(cmdline) or 'chromedriver' in name.lower()):
-                    print(f"Убиваем процесс: {name} (PID: {proc.info['pid']})")
+                    print(f"process killed: {name} (PID: {proc.info['pid']})")
                     proc.terminate()
                     try:
                         proc.wait(timeout=3)
