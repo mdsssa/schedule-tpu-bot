@@ -387,7 +387,7 @@ def telegramSide():
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
                 count = len(get_users())
-                bot.send_message(chat_id, f'users : {count}', reply_markup=markup)
+                bot.send_message(chat_id, f'users : {count} , with sub : {len(getAllSubscribedUsers())}', reply_markup=markup)
             elif data == 'log':
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
