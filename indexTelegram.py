@@ -453,7 +453,11 @@ def telegramSide():
             elif data == 'schedule_week':
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton('Вернуться в меню', callback_data='menu'))
-                bot.send_photo(chat_id, webside(allweek=True, wId=True, id=chat_id) , reply_markup= markup)
+                try:
+                    bot.send_photo(chat_id, webside(allweek=True, wId=True, id=chat_id) , reply_markup= markup)
+                except Exception as e:
+                    send_to_logger(chat_id , e)
+                    bot.send_message('К сожалению сейчас невозможно получить расписание на всю неделю. Попробуйте позже или посмотрите расписане на конкретный день' , reply_markup=markup)
             update_users(chat_id)
 
         except Exception as e:
