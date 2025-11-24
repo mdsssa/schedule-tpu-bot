@@ -438,7 +438,6 @@ def telegramSide():
                     buffer.seek(0)
                 except Exception as e:
                     pass
-                # bot.send_photo(chat_id , photo=buffer , caption= f'Вы можете поддержать нас копеечкой по ссылке⬇️ или по QR⬆️\n{donate_link}', reply_markup=markup)
                 try:
                     bot.send_photo(chat_id , open('/usr/medissa/schedule.tpu.bot/qr.jpeg' , 'rb') , reply_markup=markup , caption=  f'Вы можете поддержать нас копеечкой по ссылке⬇️ или по QR⬆️\n{donate_link}')
                 except Exception as e:
