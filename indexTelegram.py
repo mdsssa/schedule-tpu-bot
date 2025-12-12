@@ -453,7 +453,8 @@ def telegramSide():
                 used_lects = []
                 data , isit = webside(wId=True , id= chat_id , raw=True)
                 for i  in data:
-                    for i , lecture in enumerate(i):
+                    del i[0]
+                    for j , lecture in enumerate(i):
                         print(lecture.split('\n')[0])
             elif data == 'schedule_week':
                 markup = InlineKeyboardMarkup()
