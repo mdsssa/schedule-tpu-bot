@@ -21,7 +21,7 @@ tables = {
     'todayUsers' : "(uses integer , isUnuque integer)" ,
     'lectures_deleted' : "(id integer , lecture_name string)"
 }
-def get_deleted_lectures(id:int) -> list:
+def get_deleted_lectures(id: int) -> list:
     try:
         db = sql.connect(stPatch)
         cursor = db.cursor()
