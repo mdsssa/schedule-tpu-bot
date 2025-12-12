@@ -15,7 +15,8 @@ tables = {
     'date' : '(date integer)' ,
     'users' : "(id integer , username string , course integer , school string , 'group' string , sub integer)" ,
     'Friends' : "(id integer , friendName string , friendcourse integer , friendschool string , friendgroup string , Friendid integer)" ,
-    'todayUsers' : "(uses integer , isUnuque integer)"
+    'todayUsers' : "(uses integer , isUnuque integer)" ,
+    'lectures_deleted' : "(id integer , lecture_name string)"
 }
 
 def update_users(id):
@@ -277,4 +278,3 @@ if __name__ == '__main__':
     print(checkUserSub(873729188))
     for i in range(10):
         update_users(873729188)
-    clearUsers()
