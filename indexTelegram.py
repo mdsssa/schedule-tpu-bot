@@ -451,12 +451,17 @@ def telegramSide():
             elif data == 'test':
                 markup = InlineKeyboardMarkup()
                 used_lects = []
+                types_ = ['(ПР)' , '(А)'  '(ЛК)']
                 data , isit = webside(wId=True , id= chat_id , raw=True)
                 for i  in data:
                     print(i)
                     del i[0]
                     for j , lecture in enumerate(i):
-                        print(j , lecture.split('\n')[0])
+                        lecture_data = lecture.split('\n')
+                        lecture = lecture_data[0]
+                        if True in [True if i in lecture_data[0] else False for i in used_lects]:
+                            lecture = f'{lecture_data[1]} {lecture_data[0]}'
+                        print(j , lecture)
 
             elif data == 'schedule_week':
                 markup = InlineKeyboardMarkup()
