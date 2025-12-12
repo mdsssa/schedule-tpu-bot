@@ -275,6 +275,6 @@ def fixFriendsIds(id):
         print(e)
 if __name__ == '__main__':
     makeDb()
-    print(checkUserSub(873729188))
-    for i in range(10):
-        update_users(873729188)
+    # print(checkUserSub(873729188))
+    # for i in range(10):
+    #     update_users(873729188)
