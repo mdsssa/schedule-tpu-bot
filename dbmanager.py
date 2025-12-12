@@ -18,7 +18,15 @@ tables = {
     'todayUsers' : "(uses integer , isUnuque integer)" ,
     'lectures_deleted' : "(id integer , lecture_name string)"
 }
-
+def get_deleted_lectures(id:int) -> list:
+    try:
+        db = sql.connect(stPatch)
+        cursor = db.cursor()
+        cursor.execute(f"SELECT lecture_name FROM lectures_deleted WHERE id={id}")
+        print(cursor.fetchall())
+        return cursor.fetchall()
+    except Exception as e:
+        print(e)
 def update_users(id):
     try:
         db = sql.connect(stPatch)

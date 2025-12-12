@@ -465,6 +465,7 @@ def telegramSide():
                             used_lects.append(lecture)
                             markup.add(InlineKeyboardButton(lecture , callback_data=f"del_l_{lecture}"))
                 bot.send_message(chat_id, 'a' , reply_markup=markup)
+                get_deleted_lectures(chat_id)
 
             elif data == 'schedule_week':
                 markup = InlineKeyboardMarkup()
