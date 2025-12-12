@@ -466,6 +466,9 @@ def telegramSide():
                             markup.add(InlineKeyboardButton(lecture , callback_data=f"del_l_{lecture}"))
                 bot.send_message(chat_id, 'a' , reply_markup=markup)
                 get_deleted_lectures(chat_id)
+            elif data.startswith('del_l_'):
+                add_deleted_lectures(chat_id , data.replace('del_l_' , ''))
+
 
             elif data == 'schedule_week':
                 markup = InlineKeyboardMarkup()
@@ -475,6 +478,8 @@ def telegramSide():
                 except Exception as e:
                     send_to_logger(chat_id , e)
                     bot.send_message('К сожалению сейчас невозможно получить расписание на всю неделю. Попробуйте позже или посмотрите расписане на конкретный день' , reply_markup=markup)
+
+
             update_users(chat_id)
 
         except Exception as e:
