@@ -472,7 +472,10 @@ def telegramSide():
                 bot.send_message(chat_id, 'Выберите предмет , который вы не хотите видеть в своем расписании: ', reply_markup=markup)
 
             elif data.startswith('del_l_'):
+                markup = InlineKeyboardMarkup()
+                markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
                 add_deleted_lectures(chat_id , data.replace('del_l_' , ''))
+                markup.add(InlineKeyboardButton("Отмена" , callback_data=f'un{data.replace('del_l_' , '')}'))
                 bot.send_message(chat_id , f"Предмет {data.replace('del_l_' , '')} удален , он больше не будет появляться в вашем расписании")
 
                 print(get_deleted_lectures(chat_id))
