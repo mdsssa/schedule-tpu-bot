@@ -451,23 +451,30 @@ def telegramSide():
             elif data == 'test':
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
+                markup.add(InlineKeyboardButton("Удалить предмет", callback_data=f"delete_pair"))
+                bot.send_message(chat_id , 'test' , reply_markup=markup)
+            elif data == "delete_pair":
+                markup = InlineKeyboardMarkup()
+                markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
                 used_lects = []
-                types_ = ['(ПР)' , '(А)'  '(ЛК)']
-                data , isit = webside(wId=True , id= chat_id , raw=True)
-                for i  in data:
+                types_ = ['(ПР)', '(А)'  '(ЛК)']
+                data, isit = webside(wId=True, id=chat_id, raw=True)
+                for i in data:
                     del i[0]
-                    for j , lecture in enumerate(i):
+                    for j, lecture in enumerate(i):
                         lecture_data = lecture.split('\n')
                         lecture = lecture_data[0]
                         if True in [True if i == lecture_data[0] else False for i in types_]:
                             lecture = f'{lecture_data[1]} {lecture_data[0]}'
                         if not lecture in used_lects:
                             used_lects.append(lecture)
-                            markup.add(InlineKeyboardButton(lecture , callback_data=f"del_l_{lecture}"))
-                bot.send_message(chat_id, 'a' , reply_markup=markup)
-                get_deleted_lectures(chat_id)
+                            markup.add(InlineKeyboardButton(lecture, callback_data=f"del_l_{lecture}"))
+                bot.send_message(chat_id, 'Выберите предмет , который вы не хотите видеть в своем расписании: ', reply_markup=markup)
+
             elif data.startswith('del_l_'):
                 add_deleted_lectures(chat_id , data.replace('del_l_' , ''))
+                bot.send_message(chat_id , f"Предмет {data.replace('del_l_' , '')} удален , он больше не будет появляться в вашем расписании")
+
                 print(get_deleted_lectures(chat_id))
 
             elif data == 'schedule_week':
