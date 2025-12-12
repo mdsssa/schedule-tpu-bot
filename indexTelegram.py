@@ -455,7 +455,8 @@ def telegramSide():
                 for i  in data:
                     del i[0]
                     for j , lecture in enumerate(i):
-                        print(lecture.split('\n')[0])
+                        print(j , lecture.split('\n')[0])
+                print(data)
             elif data == 'schedule_week':
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton('Вернуться в меню', callback_data='menu'))
