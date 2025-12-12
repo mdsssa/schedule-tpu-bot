@@ -461,8 +461,8 @@ def telegramSide():
                         lecture = lecture_data[0]
                         if True in [True if i == lecture_data[0] else False for i in types_]:
                             lecture = f'{lecture_data[1]} {lecture_data[0]}'
-                        used_lects.append(lecture)
                         if not lecture in used_lects:
+                            used_lects.append(lecture)
                             markup.add(InlineKeyboardButton(lecture , callback_data=f"del_l_{lecture}"))
                 bot.send_message(chat_id, 'a' , reply_markup=markup)
 
