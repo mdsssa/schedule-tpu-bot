@@ -450,11 +450,11 @@ def telegramSide():
                 bot.send_message(chat_id , f'Число уникальных юзеров {get_unique()} , использований вообще - {get_usersUse()}' , reply_markup=markup)
             elif data == 'test':
                 markup = InlineKeyboardMarkup()
+                markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
                 used_lects = []
                 types_ = ['(ПР)' , '(А)'  '(ЛК)']
                 data , isit = webside(wId=True , id= chat_id , raw=True)
                 for i  in data:
-                    print(i)
                     del i[0]
                     for j , lecture in enumerate(i):
                         lecture_data = lecture.split('\n')
