@@ -468,7 +468,7 @@ def telegramSide():
                 get_deleted_lectures(chat_id)
             elif data.startswith('del_l_'):
                 add_deleted_lectures(chat_id , data.replace('del_l_' , ''))
-
+                print(get_deleted_lectures(chat_id))
 
             elif data == 'schedule_week':
                 markup = InlineKeyboardMarkup()

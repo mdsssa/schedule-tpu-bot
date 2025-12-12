@@ -30,11 +30,11 @@ def get_deleted_lectures(id:int) -> list:
         return cursor.fetchall()
     except Exception as e:
         print(e)
-def add_deleted_lectures(id:int , lecture_name:str) -> list:
+def add_deleted_lectures(id:int , lecture_name:str) -> None:
     try:
         db = sql.connect(stPatch)
         cursor = db.cursor()
-        cursor.execute(f"INSERT INTO todayUsers VALUES (? , ?)" , (id , lecture_name))
+        cursor.execute(f"INSERT INTO lectures_deleted VALUES (? , ?)" , (id , lecture_name))
         db.commit()
         db.close()
     except Exception as e:
