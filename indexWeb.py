@@ -222,7 +222,7 @@ def get_driver():
     )
 
     return driver
-def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 1 , wId = False , id = None , forFriend = False , optionsOn = None , allweek = False):
+def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 1 , wId = False , id = None , forFriend = False , optionsOn = None , allweek = False , raw = False):
     try:
         if wId:
             if id != None:
@@ -294,7 +294,10 @@ def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 
         driver.quit()
         sleep(0.1)
         kill_chrome_processes()
+        if raw:
+            return data , True
         return to_return , True
+
     except Exception as e:
         print(e)
         try:
