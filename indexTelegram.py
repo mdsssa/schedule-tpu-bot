@@ -459,7 +459,7 @@ def telegramSide():
                     for j , lecture in enumerate(i):
                         lecture_data = lecture.split('\n')
                         lecture = lecture_data[0]
-                        if True in [True if i in lecture_data[0] else False for i in used_lects]:
+                        if True in [True if i in lecture_data[0] else False for i in types_]:
                             lecture = f'{lecture_data[1]} {lecture_data[0]}'
                         print(j , lecture)
 
