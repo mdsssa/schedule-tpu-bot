@@ -126,8 +126,6 @@ def get_schedule_week(title, schedule_data):
                 start_y += line_height
 
         y += row_h
-
-    # === ВОДЯНОЙ ЗНАК ===
     wm_bbox = draw.textbbox((0, 0), WATERMARK, font=watermark_font)
     wm_w = wm_bbox[2] - wm_bbox[0]
     wm_h = wm_bbox[3] - wm_bbox[1]

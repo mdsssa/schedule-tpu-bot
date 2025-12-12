@@ -449,7 +449,9 @@ def telegramSide():
                 markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
                 bot.send_message(chat_id , f'Число уникальных юзеров {get_unique()} , использований вообще - {get_usersUse()}' , reply_markup=markup)
             elif data == 'test':
-                bot.send_photo(chat_id,webside(allweek=True , wId= True , id= chat_id))
+                markup = InlineKeyboardMarkup()
+                for i , lect in enumerate(webside(wId=True , id= chat_id)):
+                    print(i , lect)
             elif data == 'schedule_week':
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton('Вернуться в меню', callback_data='menu'))
