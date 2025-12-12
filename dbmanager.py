@@ -1,16 +1,19 @@
 import sqlite3 as sql
 import time
 
-from colorama import Fore
+# from colorama import Fore
 import os
 #id username course school group sub 
 stPatch = './db/info.db'
 def r(text):
-    print(f'{Fore.RED} {text}{Fore.RESET}')
+    # print(f'{Fore.RED} {text}{Fore.RESET}')
+    print(text)
 def g(text):
-    print(f'{Fore.GREEN}{text}{Fore.RESET}')
+    # print(f'{Fore.GREEN}{text}{Fore.RESET}')
+    print(text)
 def b(text):
-    print(f'{Fore.BLUE}{text}{Fore.RESET}')
+    # print(f'{Fore.BLUE}{text}{Fore.RESET}')
+    print(text)
 tables = {
     'date' : '(date integer)' ,
     'users' : "(id integer , username string , course integer , school string , 'group' string , sub integer)" ,
