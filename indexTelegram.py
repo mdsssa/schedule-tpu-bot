@@ -452,8 +452,8 @@ def telegramSide():
                 markup = InlineKeyboardMarkup()
                 used_lects = []
                 data , isit = webside(wId=True , id= chat_id , raw=True)
-                print(data)
                 for i  in data:
+                    print(i)
                     del i[0]
                     for j , lecture in enumerate(i):
                         print(j , lecture.split('\n')[0])
