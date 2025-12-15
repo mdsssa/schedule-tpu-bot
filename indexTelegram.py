@@ -472,7 +472,7 @@ def telegramSide():
                                 used_lects.append(lecture)
                                 try:
                                     print(lecture)
-                                    markup.add(InlineKeyboardButton(lecture, callback_data=f"del"))
+                                    markup.add(InlineKeyboardButton(lecture, callback_data=f"d{lecture}"))
                                 except Exception as e:
                                     print(e)
                     bot.send_message(chat_id, 'Выберите предмет , который вы не хотите видеть в своем расписании: ', reply_markup=markup)
@@ -486,7 +486,7 @@ def telegramSide():
                     message = f'У пользователя {id} произошла ошибка :  {e}'
                     message = f'{message}\nОшибка {exc_type.__name__}\nНа строке {line_number} ,в функции {function_name} файла {file_name} '
                     print(message)
-            elif data.startswith('del_l_'):
+            elif data.startswith('d') and True in [i in data for i in ['(ПР)', '(А)'  '(ЛК)']]:
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
                 add_deleted_lectures(chat_id , data.replace('del_l_' , ''))
