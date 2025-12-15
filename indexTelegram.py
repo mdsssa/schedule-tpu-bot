@@ -497,7 +497,7 @@ def telegramSide():
             elif data.startswith('del_l'):
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
-                lect = users_lects[chat_id][int(data.replace('del_l_' , '')) + 1]
+                lect = users_lects[chat_id][int(data.replace('del_l_' , '')) - 1]
                 add_deleted_lectures(chat_id , lect)
                 markup.add(InlineKeyboardButton("Отмена" , callback_data=f'un{data.replace('del_l' , '')}'))
                 bot.send_message(chat_id , f"Предмет {lect} удален , он больше не будет появляться в вашем расписании" , reply_markup=markup)
