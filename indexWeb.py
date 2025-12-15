@@ -48,7 +48,7 @@ def get_pairs_without_deleted(id , data , fullWeek = False):
                 if True in [True if i == lecture_data[0] else False for i in types_]:
                     lecture = f'{lecture_data[1]} {lecture_data[0]}'
                 if lecture in deleted_lect:
-                    data[j] == 'Вы удалили данный предмет.'
+                    data[j] == ' Вы удалили данный предмет.'
         return data
     except Exception as e:
         exc_type, exc_value, exc_traceback = sys.exc_info()
