@@ -43,14 +43,12 @@ def get_pairs_without_deleted(id , data , fullWeek = False):
                         data[i][j] == 'Вы удалили данный предмет.'
         else:
             for j, element in enumerate(data):
-
                 lecture_data = element[0].split('\n')
                 lecture = lecture_data
-                print(deleted_lect)
                 print([lecture_data in i[0] for i in deleted_lect])
                 if True in [lecture_data in i[0] for i in deleted_lect]:
                     lecture = f'{lecture_data[1]} {lecture_data[0]}'
-                print(lecture)
+                # print(lecture)
                 if lecture in deleted_lect:
                     data[j] == ' Вы удалили данный предмет.'
         return data
