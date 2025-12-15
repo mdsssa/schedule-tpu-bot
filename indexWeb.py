@@ -44,7 +44,7 @@ def get_pairs_without_deleted(id , data , fullWeek = False):
         else:
             for j, element in enumerate(data):
                 print(data)
-                lecture_data = element.split('\n')
+                lecture_data = element[0].split('\n')
                 lecture = lecture_data[0]
                 if True in [True if i == lecture_data[0] else False for i in types_]:
                     lecture = f'{lecture_data[1]} {lecture_data[0]}'
