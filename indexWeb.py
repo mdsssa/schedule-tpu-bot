@@ -50,7 +50,7 @@ def get_pairs_without_deleted(id , data , fullWeek = False):
                     lecture = f'{lecture_data[1]} {lecture_data[0]}'
                 print("что", lecture)
                 # print(lecture)
-                if lecture in deleted_lect:
+                if True in [lecture in i for i in deleted_lect]:
                     data[j] == ' Вы удалили данный предмет.'
         print(deleted_lect)
         return data
