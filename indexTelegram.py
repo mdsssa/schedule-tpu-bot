@@ -454,23 +454,33 @@ def telegramSide():
                 markup.add(InlineKeyboardButton("Удалить предмет", callback_data=f"delete_pair"))
                 bot.send_message(chat_id , 'test' , reply_markup=markup)
             elif data == "delete_pair":
-                markup = InlineKeyboardMarkup()
-                markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
-                used_lects = []
-                types_ = ['(ПР)', '(А)'  '(ЛК)']
-                data, isit = webside(wId=True, id=chat_id, raw=True)
-                for i in data:
-                    del i[0]
-                    for j, lecture in enumerate(i):
-                        lecture_data = lecture.split('\n')
-                        lecture = lecture_data[0]
-                        if True in [True if i == lecture_data[0] else False for i in types_]:
-                            lecture = f'{lecture_data[1]} {lecture_data[0]}'
-                        if not lecture in used_lects:
-                            used_lects.append(lecture)
-                            markup.add(InlineKeyboardButton(lecture, callback_data=f"del_l_{lecture}"))
-                bot.send_message(chat_id, 'Выберите предмет , который вы не хотите видеть в своем расписании: ', reply_markup=markup)
-
+                try:
+                    markup = InlineKeyboardMarkup()
+                    markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
+                    used_lects = []
+                    types_ = ['(ПР)', '(А)'  '(ЛК)']
+                    data, isit = webside(wId=True, id=chat_id, raw=True)
+                    for i in data:
+                        del i[0]
+                        for j, lecture in enumerate(i):
+                            lecture_data = lecture.split('\n')
+                            lecture = lecture_data[0]
+                            if True in [True if i == lecture_data[0] else False for i in types_]:
+                                lecture = f'{lecture_data[1]} {lecture_data[0]}'
+                            if not lecture in used_lects:
+                                used_lects.append(lecture)
+                                markup.add(InlineKeyboardButton(lecture, callback_data=f"del_l_{lecture}"))
+                    bot.send_message(chat_id, 'Выберите предмет , который вы не хотите видеть в своем расписании: ', reply_markup=markup)
+                except Exception as e:
+                    exc_type, exc_value, exc_traceback = sys.exc_info()
+                    tb_list = traceback.extract_tb(exc_traceback)
+                    last_frame = tb_list[-1]
+                    file_name = last_frame.filename
+                    line_number = last_frame.lineno
+                    function_name = last_frame.name
+                    message = f'У пользователя {id} произошла ошибка :  {e}'
+                    message = f'{message}\nОшибка {exc_type.__name__}\nНа строке {line_number} ,в функции {function_name} файла {file_name} '
+                    print(message)
             elif data.startswith('del_l_'):
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
