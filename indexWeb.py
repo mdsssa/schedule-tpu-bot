@@ -315,7 +315,7 @@ def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 
         dataspec = getSpecificDay(data , day_index)
         if True:
             if wId:
-                dataspec = get_pairs_without_deleted(id , data)
+                dataspec = get_pairs_without_deleted(id , data , True)
         # except Exception as e:
         #     print('ошибочка ')
         count = 0
