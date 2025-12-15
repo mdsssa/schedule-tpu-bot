@@ -57,7 +57,7 @@ def get_pairs_without_deleted(id , data , fullWeek = False):
         file_name = last_frame.filename
         line_number = last_frame.lineno
         function_name = last_frame.name
-        message = f'У пользователя {id} произошла ошибка :  {ex}'
+        message = f'У пользователя {id} произошла ошибка :  {e}'
         message = f'{message}\nОшибка {exc_type.__name__}\nНа строке {line_number} ,в функции {function_name} файла {file_name} '
         print(message)
 def get_schedule_week(title, schedule_data):
