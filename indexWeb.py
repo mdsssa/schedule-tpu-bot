@@ -46,8 +46,8 @@ def get_pairs_without_deleted(id , data , fullWeek = False):
                 print("что" , element)
                 lecture_data = element[0].split('\n')
                 lecture = lecture_data
-                print([True if lecture_data in i[0] else False for i in deleted_lect])
-                if True in [lecture_data in i[0] for i in deleted_lect]:
+
+                if True in [True if i == lecture_data[0] else False for i in types_]:
                     lecture = f'{lecture_data[1]} {lecture_data[0]}'
                 # print(lecture)
                 if lecture in deleted_lect:
