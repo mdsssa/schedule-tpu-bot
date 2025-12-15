@@ -464,7 +464,6 @@ def telegramSide():
                     types_ = ['(ПР)', '(А)' , '(ЛК)' , "(КТ)" , "(КС)"]
                     data, isit = webside(wId=True, id=chat_id, raw=True)
                     users_lects[chat_id] = []
-                    print(data)
                     c = 0
                     for i in data:
                         del i[0]
@@ -476,7 +475,6 @@ def telegramSide():
                             if not lecture in used_lects:
                                 used_lects.append(lecture)
                                 try:
-                                    print(lecture)
                                     users_lects[chat_id].append(lecture)
                                     markup.add(InlineKeyboardButton(lecture, callback_data=f"del_l_{c}"))
                                 except Exception as e:
