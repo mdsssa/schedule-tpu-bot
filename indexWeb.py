@@ -32,6 +32,7 @@ def get_pairs_without_deleted(id , data , fullWeek = False):
     try:
         types_ = ['(ПР)', '(А)' , '(ЛК)' , "(КТ)" , "(КС)"]
         deleted_lect = get_deleted_lectures(id)
+        print(deleted_lect)
         if fullWeek:
             for i , row in enumerate(data):
                 for j  , element in enumerate(row):
