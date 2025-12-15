@@ -470,6 +470,7 @@ def telegramSide():
                             if not lecture in used_lects:
                                 used_lects.append(lecture)
                                 try:
+                                    print(lecture)
                                     markup.add(InlineKeyboardButton(lecture, callback_data=f"del_l_{lecture}"))
                                 except Exception as e:
                                     print(e)
