@@ -30,7 +30,7 @@ import telebot
 #                             markup.add(InlineKeyboardButton(lecture, callback_data=f"del_l_{lecture}"))
 def get_pairs_without_deleted(id , data , fullWeek = False):
     try:
-        types_ = ['(ПР)', '(А)'  '(ЛК)']
+        types_ = ['(ПР)', '(А)' , '(ЛК)' , "(КТ)" , "(КС)"]
         deleted_lect = get_deleted_lectures(id)
         if fullWeek:
             for i , row in enumerate(data):
@@ -43,9 +43,10 @@ def get_pairs_without_deleted(id , data , fullWeek = False):
                         data[i][j] == 'Вы удалили данный предмет.'
         else:
             for j, element in enumerate(data):
+                print(element)
                 lecture_data = element[0].split('\n')
                 lecture = lecture_data
-                print([lecture_data in i[0] for i in deleted_lect])
+                print([True if lecture_data in i[0] else False for i in deleted_lect])
                 if True in [lecture_data in i[0] for i in deleted_lect]:
                     lecture = f'{lecture_data[1]} {lecture_data[0]}'
                 # print(lecture)
