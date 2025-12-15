@@ -29,26 +29,29 @@ import telebot
 #                             used_lects.append(lecture)
 #                             markup.add(InlineKeyboardButton(lecture, callback_data=f"del_l_{lecture}"))
 def get_pairs_without_deleted(id , data , fullWeek = False):
-    types_ = ['(ПР)', '(А)'  '(ЛК)']
-    deleted_lect = get_deleted_lectures(id)
-    if fullWeek:
-        for i , row in enumerate(data):
-            for j  , element in enumerate(row):
+    try:
+        types_ = ['(ПР)', '(А)'  '(ЛК)']
+        deleted_lect = get_deleted_lectures(id)
+        if fullWeek:
+            for i , row in enumerate(data):
+                for j  , element in enumerate(row):
+                    lecture_data = element.split('\n')
+                    lecture = lecture_data[0]
+                    if True in [True if i == lecture_data[0] else False for i in types_]:
+                        lecture = f'{lecture_data[1]} {lecture_data[0]}'
+                    if lecture in deleted_lect:
+                        data[i][j] == 'Вы удалили данный предмет.'
+        else:
+            for j, element in enumerate(data):
                 lecture_data = element.split('\n')
                 lecture = lecture_data[0]
                 if True in [True if i == lecture_data[0] else False for i in types_]:
                     lecture = f'{lecture_data[1]} {lecture_data[0]}'
                 if lecture in deleted_lect:
-                    data[i][j] == 'Вы удалили данный предмет.'
-    else:
-        for j, element in enumerate(data):
-            lecture_data = element.split('\n')
-            lecture = lecture_data[0]
-            if True in [True if i == lecture_data[0] else False for i in types_]:
-                lecture = f'{lecture_data[1]} {lecture_data[0]}'
-            if lecture in deleted_lect:
-                data[j] == 'Вы удалили данный предмет.'
-    return data
+                    data[j] == 'Вы удалили данный предмет.'
+        return data
+    except Exception as e:
+        print(e)
 def get_schedule_week(title, schedule_data):
     WIDTH, HEIGHT = 2400, 1500
     BG_COLOR = (0, 0, 0)
