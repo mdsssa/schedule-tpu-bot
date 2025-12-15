@@ -43,10 +43,14 @@ def get_pairs_without_deleted(id , data , fullWeek = False):
                         data[i][j] == 'Вы удалили данный предмет.'
         else:
             for j, element in enumerate(data):
+
                 lecture_data = element[0].split('\n')
                 lecture = lecture_data[0]
+                print(deleted_lect)
+
                 if True in [True if i == lecture_data[0] else False for i in types_]:
                     lecture = f'{lecture_data[1]} {lecture_data[0]}'
+                print(lecture)
                 if lecture in deleted_lect:
                     data[j] == ' Вы удалили данный предмет.'
         return data
@@ -314,7 +318,7 @@ def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 
         dataspec = getSpecificDay(data , day_index)
         if True:
             if wId:
-                dataspec = get_pairs_without_deleted(id , dataspec )
+                dataspec = get_pairs_without_deleted(id , dataspec)
         # except Exception as e:
         #     print('ошибочка ')
         count = 0
