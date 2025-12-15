@@ -50,9 +50,9 @@ def get_pairs_without_deleted(id , data , fullWeek = False):
                 print("что", lecture)
                 # print(lecture)
                 for i in deleted_lect:
+                    print('ничо i')
                     if lecture in i:
                         data[j] == 'Вы удалили данный предмет.'
-        print(deleted_lect)
         return data
     except Exception as e:
         exc_type, exc_value, exc_traceback = sys.exc_info()
