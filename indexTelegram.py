@@ -460,6 +460,7 @@ def telegramSide():
                     used_lects = []
                     types_ = ['(ПР)', '(А)'  '(ЛК)']
                     data, isit = webside(wId=True, id=chat_id, raw=True)
+                    print(data)
                     for i in data:
                         del i[0]
                         for j, lecture in enumerate(i):
