@@ -469,7 +469,10 @@ def telegramSide():
                                 lecture = f'{lecture_data[1]} {lecture_data[0]}'
                             if not lecture in used_lects:
                                 used_lects.append(lecture)
-                                markup.add(InlineKeyboardButton(lecture, callback_data=f"del_l_{lecture}"))
+                                try:
+                                    markup.add(InlineKeyboardButton(lecture, callback_data=f"del_l_{lecture}"))
+                                except Exception as e:
+                                    pass
                     bot.send_message(chat_id, 'Выберите предмет , который вы не хотите видеть в своем расписании: ', reply_markup=markup)
                 except Exception as e:
                     exc_type, exc_value, exc_traceback = sys.exc_info()
