@@ -301,8 +301,11 @@ def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 
             except Exception:
                 return f"К сожалению , сейчас невозможно получить информацию с сайта ТПУ😰\nЭта ошибка обычно единичная и больше не повторяется , попробуйте еще раз!", False
         dataspec = getSpecificDay(data , day_index)
-        if wId:
-            dataspec = get_pairs_without_deleted(id , data)
+        try:
+            if wId:
+                dataspec = get_pairs_without_deleted(id , data)
+        except Exception as e:
+            pass
         count = 0
         to_return = '' + "Специальность : " + speciality + '.'  + '\n' + daysOfWeek[day_index] + '\n'
         text = ''
