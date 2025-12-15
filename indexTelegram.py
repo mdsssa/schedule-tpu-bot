@@ -26,6 +26,9 @@ menuText = 'Вы в главном меню!\nТут есть все , что в
 FriendRegistration = {
 
 }
+users_lects = {
+
+}
 daysOfWeek = {
     "rus" : ['понедельник' , "вторник" , "среда" , "четверг" , "пятница" , "суббота"] ,
     "eng" : ["monday" , "tuesday" , "wednesday" , "thursday" , "friday" , "saturday"]
@@ -460,7 +463,9 @@ def telegramSide():
                     used_lects = []
                     types_ = ['(ПР)', '(А)' , '(ЛК)' , "(КТ)" , "(КС)"]
                     data, isit = webside(wId=True, id=chat_id, raw=True)
+                    users_lects[chat_id] = []
                     print(data)
+                    c = 0
                     for i in data:
                         del i[0]
                         for j, lecture in enumerate(i):
@@ -472,9 +477,12 @@ def telegramSide():
                                 used_lects.append(lecture)
                                 try:
                                     print(lecture)
-                                    markup.add(InlineKeyboardButton(lecture, callback_data=f"d{lecture}"))
+                                    users_lects[chat_id].append(lecture)
+                                    markup.add(InlineKeyboardButton(lecture, callback_data=f"del_l_{c}"))
                                 except Exception as e:
                                     print(e)
+                            c+=1
+                    print(users_lects[chat_id])
                     bot.send_message(chat_id, 'Выберите предмет , который вы не хотите видеть в своем расписании: ', reply_markup=markup)
                 except Exception as e:
                     exc_type, exc_value, exc_traceback = sys.exc_info()
@@ -486,7 +494,7 @@ def telegramSide():
                     message = f'У пользователя {id} произошла ошибка :  {e}'
                     message = f'{message}\nОшибка {exc_type.__name__}\nНа строке {line_number} ,в функции {function_name} файла {file_name} '
                     print(message)
-            elif data.startswith('d') and True in [i in data for i in ['(ПР)', '(А)' , '(ЛК)' , "(КТ)" , "(КС)"]]:
+            elif data.startswith('del_l'):
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
                 add_deleted_lectures(chat_id , data.replace('del_l_' , ''))
