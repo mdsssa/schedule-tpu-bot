@@ -458,7 +458,7 @@ def telegramSide():
                     markup = InlineKeyboardMarkup()
                     markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
                     used_lects = []
-                    types_ = ['(ПР)', '(А)'  '(ЛК)']
+                    types_ = ['(ПР)', '(А)' , '(ЛК)' , "(КТ)" , "(КС)"]
                     data, isit = webside(wId=True, id=chat_id, raw=True)
                     print(data)
                     for i in data:
@@ -486,11 +486,11 @@ def telegramSide():
                     message = f'У пользователя {id} произошла ошибка :  {e}'
                     message = f'{message}\nОшибка {exc_type.__name__}\nНа строке {line_number} ,в функции {function_name} файла {file_name} '
                     print(message)
-            elif data.startswith('d') and True in [i in data for i in ['(ПР)', '(А)'  '(ЛК)']]:
+            elif data.startswith('d') and True in [i in data for i in ['(ПР)', '(А)' , '(ЛК)' , "(КТ)" , "(КС)"]]:
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
                 add_deleted_lectures(chat_id , data.replace('del_l_' , ''))
-                markup.add(InlineKeyboardButton("Отмена" , callback_data=f'un{data.replace('del_l_' , '')}'))
+                markup.add(InlineKeyboardButton("Отмена" , callback_data=f'un{data.replace('d' , '')}'))
                 bot.send_message(chat_id , f"Предмет {data.replace('del_l_' , '')} удален , он больше не будет появляться в вашем расписании" , reply_markup=markup)
 
                 print(get_deleted_lectures(chat_id))
