@@ -13,9 +13,43 @@ from PIL import Image, ImageDraw, ImageFont
 import textwrap
 import os
 import telebot
-
+# markup = InlineKeyboardMarkup()
+#                 markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
+#                 used_lects = []
+#                 types_ = ['(ПР)', '(А)'  '(ЛК)']
+#                 data, isit = webside(wId=True, id=chat_id, raw=True)
+#                 for i in data:
+#                     del i[0]
+#                     for j, lecture in enumerate(i):
+#                         lecture_data = lecture.split('\n')
+#                         lecture = lecture_data[0]
+#                         if True in [True if i == lecture_data[0] else False for i in types_]:
+#                             lecture = f'{lecture_data[1]} {lecture_data[0]}'
+#                         if not lecture in used_lects:
+#                             used_lects.append(lecture)
+#                             markup.add(InlineKeyboardButton(lecture, callback_data=f"del_l_{lecture}"))
+def get_pairs_without_deleted(id , data , fullWeek = False):
+    types_ = ['(ПР)', '(А)'  '(ЛК)']
+    deleted_lect = get_deleted_lectures(id)
+    if fullWeek:
+        for i , row in enumerate(data):
+            for j  , element in enumerate(row):
+                lecture_data = element.split('\n')
+                lecture = lecture_data[0]
+                if True in [True if i == lecture_data[0] else False for i in types_]:
+                    lecture = f'{lecture_data[1]} {lecture_data[0]}'
+                if lecture in deleted_lect:
+                    data[i][j] == 'Вы удалили данный предмет.'
+    else:
+        for j, element in enumerate(data):
+            lecture_data = element.split('\n')
+            lecture = lecture_data[0]
+            if True in [True if i == lecture_data[0] else False for i in types_]:
+                lecture = f'{lecture_data[1]} {lecture_data[0]}'
+            if lecture in deleted_lect:
+                data[j] == 'Вы удалили данный предмет.'
+    return data
 def get_schedule_week(title, schedule_data):
-    # === НАСТРОЙКИ ===
     WIDTH, HEIGHT = 2400, 1500
     BG_COLOR = (0, 0, 0)
     TEXT_COLOR = (255, 255, 255)
@@ -24,12 +58,8 @@ def get_schedule_week(title, schedule_data):
     WATERMARK = "©TELEGRAM @schedule_tpu_bot "
     CELL_FONT_SIZE = 18
     MIN_ROW_HEIGHT = 90
-
-    # === ИЗОБРАЖЕНИЕ ===
     img = Image.new('RGB', (WIDTH, HEIGHT), BG_COLOR)
     draw = ImageDraw.Draw(img)
-
-    # === ШРИФТЫ (с гарантией UTF-8) ===
     def get_font(size):
         candidates = [
             "/System/Library/Fonts/Arial.ttf",
@@ -271,6 +301,8 @@ def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 
             except Exception:
                 return f"К сожалению , сейчас невозможно получить информацию с сайта ТПУ😰\nЭта ошибка обычно единичная и больше не повторяется , попробуйте еще раз!", False
         dataspec = getSpecificDay(data , day_index)
+        if wId:
+            dataspec = get_pairs_without_deleted(id , data)
         count = 0
         to_return = '' + "Специальность : " + speciality + '.'  + '\n' + daysOfWeek[day_index] + '\n'
         text = ''
