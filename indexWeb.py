@@ -305,7 +305,7 @@ def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 
             if wId:
                 dataspec = get_pairs_without_deleted(id , data)
         except Exception as e:
-            pass
+            print('ошибочка ')
         count = 0
         to_return = '' + "Специальность : " + speciality + '.'  + '\n' + daysOfWeek[day_index] + '\n'
         text = ''
