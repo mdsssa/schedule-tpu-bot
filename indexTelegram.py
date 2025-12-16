@@ -226,13 +226,12 @@ def telegramSide():
         try:
             markup = InlineKeyboardMarkup()
             markup.row_width = 3
-            now = datetime.now().weekday()
+            now = datetime.datetime.now().weekday()
             for i, weekDay in enumerate(daysOfWeek["rus"]):
                 if i == now:
                     weekDay += ' (Сегодня)'
                 markup.add(InlineKeyboardButton(weekDay.capitalize() , callback_data=f"{f"weekDay_{i}" if not forFriend else f'FweekDay_{i}_{id}_{friend_index}'}"))
             markup.add(InlineKeyboardButton('Вернуться в меню' , callback_data=f"menu"))
-
             return markup
         except Exception as e:
             send_to_logger(e)
@@ -460,7 +459,7 @@ def telegramSide():
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
                 markup.add(InlineKeyboardButton("Удалить предмет", callback_data=f"delete_pair"))
-                bot.send_message(chat_id , f'test\nДо нового года осталось {days_left}' , reply_markup=markup)
+                bot.send_message(chat_id , f'test\nДо нового года осталось {days_left} дней' , reply_markup=markup)
             elif data == "delete_pair":
                 try:
                     markup = InlineKeyboardMarkup()
@@ -681,7 +680,7 @@ def distributionSide():
     while True:
         try:
             current_day = datetime.datetime.now().day
-            if DateManager(datenow= current_day + 1):
+            if DateManager(datenow= current_day+1):
                 bot.send_message(loggerChat , f'Уникальных юзеров: {get_unique()} , юзеров : {get_usersUse()}')
                 clearUsers()
                 users = getAllSubscribedUsers()
