@@ -13,6 +13,7 @@ import sys
 import traceback
 import qrcode
 from io import BytesIO
+import datetime
 makeDb()
 donate_link = 'https://dalink.to/medisssa'
 print(entry_art)
@@ -308,7 +309,9 @@ def telegramSide():
                 else:
                     bot.send_message(call.message.chat.id , f'Кол-во ваших друзей - {f} , максимум - {friendsCount}. А вот и {"они" if f > 1 else "он"}:', reply_markup=markup)
             elif data == "menu":
-                text = 'Вы в главном меню.\nВозможные действия:'
+                today = datetime.date.today()
+                new_year = datetime.date(today.year + 1, 1, 1)
+                days_left = (new_year - today).days
                 bot.send_message(call.message.chat.id,text=menuText,
                                      reply_markup=generateMenu(chat_id))
             #     markup.add(InlineKeyboardButton("Удалить друга" , callback_data=f"{id}_friend_delete"))
@@ -452,10 +455,13 @@ def telegramSide():
                 markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
                 bot.send_message(chat_id , f'Число уникальных юзеров {get_unique()} , использований вообще - {get_usersUse()}' , reply_markup=markup)
             elif data == 'test':
+                today = datetime.date.today()
+                new_year = datetime.date(today.year + 1, 1, 1)
+                days_left = (new_year - today).days
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
                 markup.add(InlineKeyboardButton("Удалить предмет", callback_data=f"delete_pair"))
-                bot.send_message(chat_id , 'test' , reply_markup=markup)
+                bot.send_message(chat_id , f'test\nДо нового года осталось {days_left}' , reply_markup=markup)
             elif data == "delete_pair":
                 try:
                     markup = InlineKeyboardMarkup()
