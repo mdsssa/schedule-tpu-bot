@@ -3,7 +3,7 @@ if __name__ == '__main__':
     from indexWeb import webside
 from schoolsXpathes import schools, entry_art
 from dbmanager import *
-from datetime import datetime
+import datetime
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from threading import Thread
 import time
@@ -13,7 +13,6 @@ import sys
 import traceback
 import qrcode
 from io import BytesIO
-import datetime
 makeDb()
 donate_link = 'https://dalink.to/medisssa'
 print(entry_art)
@@ -681,7 +680,7 @@ def telegramSide():
 def distributionSide():
     while True:
         try:
-            current_day = datetime.now().day
+            current_day = datetime.datetime.now().day
             if DateManager(datenow= current_day + 1):
                 bot.send_message(loggerChat , f'Уникальных юзеров: {get_unique()} , юзеров : {get_usersUse()}')
                 clearUsers()
