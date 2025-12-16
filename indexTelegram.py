@@ -57,7 +57,7 @@ bot = telebot.TeleBot(token= token)
 def save_log(ex , id):
     try:
         with open("./log.txt", "a" , encoding= 'utf-8') as log:
-            log.write(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}\n{id}\n{ex}\n')
+            log.write(f'{datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}\n{id}\n{ex}\n')
     except Exception as e:
         print(e)
 def send_to_logger(ex , id = 0 , isntanexeption = False , justInfo = False):
@@ -418,7 +418,7 @@ def telegramSide():
                 except Exception as e:
                     bot.send_message(chat_id , str(e) , reply_markup=markup)
             elif data == 'schedule_today':
-                now = datetime.now().weekday()
+                now = datetime.datetime.now().weekday()
                 bot.send_message(chat_id, 'Пожалуйста , подождите...')
                 manageMessages(chat_id, call.message.id + 1)
                 sche , ex = webside(day_index=now , wId= True , id= chat_id)
@@ -683,14 +683,14 @@ def distributionSide():
     while True:
         try:
             current_day = datetime.datetime.now().day
-            if DateManager(datenow= current_day+1):
+            if DateManager(datenow= current_day):
                 bot.send_message(loggerChat , f'Уникальных юзеров: {get_unique()} , юзеров : {get_usersUse()}')
                 clearUsers()
                 users = getAllSubscribedUsers()
                 same_groups = findUsersWithTheSameSchedule(users)
                 for users in same_groups:
                     course , school , group = users.split('_')
-                    schedule = webside(day_index = datetime.now().weekday() if datetime.weekday != 6 else 0
+                    schedule = webside(day_index = datetime.datetime.now().weekday() if datetime.datetime.weekday != 6 else 0
                                         ,  group = group , school= school , course= int(course) , raw = False)
                     if not schedule[1]:
                         send_to_logger(schedule[0] , isntanexeption = True , id = group)
