@@ -39,7 +39,15 @@ def add_deleted_lectures(id:int , lecture_name:str) -> None:
         db.close()
     except Exception as e:
         print(e)
-
+def clearDeletedLectures(id:int):
+    try:
+        db = sql.connect(stPatch)
+        cursor = db.cursor()
+        cursor.execute('''DELETE FROM lectures_deleted''')
+        db.commit()
+        db.close()
+    except Exception as e:
+        print(e)
 def update_users(id):
     try:
         db = sql.connect(stPatch)
