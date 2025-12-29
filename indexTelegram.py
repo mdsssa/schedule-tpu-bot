@@ -683,7 +683,7 @@ def distributionSide():
     while True:
         try:
             current_day = datetime.datetime.now().day
-            if DateManager(datenow= current_day):
+            if DateManager(datenow= current_day + 1):
                 bot.send_message(loggerChat , f'Уникальных юзеров: {get_unique()} , юзеров : {get_usersUse()}')
                 clearUsers()
                 users = getAllSubscribedUsers()
