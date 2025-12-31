@@ -683,7 +683,7 @@ def distributionSide():
     while True:
         try:
             current_day = datetime.datetime.now().day
-            if DateManager(datenow= current_day + 1):
+            if DateManager(datenow= current_day ):
                 bot.send_message(loggerChat , f'Уникальных юзеров: {get_unique()} , юзеров : {get_usersUse()}')
                 clearUsers()
                 users = getAllSubscribedUsers()
@@ -705,7 +705,8 @@ def distributionSide():
                                 deleteUser(user)
                             send_to_logger(e , user.id)
                         try:
-                            bot.send_message(user , f'Расписание для {school} , {course} курс , группа {group}:\n\n{schedule[0]}' , reply_markup= markup)
+                            pass
+                            # bot.send_message(user , f'Расписание для {school} , {course} курс , группа {group}:\n\n{schedule[0]}' , reply_markup= markup)
                             # bot.send_message(user , f'У нас теперь есть канал в телеграме!\nТам выкладываются новости бота , а так же там вы можете оставлять свои идеи по улучшению проекта👨‍💻\n@scheduletpunews' , reply_markup= markup)
                         except Exception as e:
                             if str(e).lower() == 'A request to the Telegram API was unsuccessful. Error code: 403. Description: Forbidden: bot was blocked by the user'.lower():
