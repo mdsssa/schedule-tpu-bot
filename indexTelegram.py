@@ -310,7 +310,7 @@ def telegramSide():
                 today = datetime.date.today()
                 new_year = datetime.date(today.year + 1, 1, 1)
                 days_left = (new_year - today).days
-                bot.send_message(call.message.chat.id,text=menuText + f'\nДо нового года осталось {days_left} дней 🎄',
+                bot.send_message(call.message.chat.id,text=menuText,
                                      reply_markup=generateMenu(chat_id))
             #     markup.add(InlineKeyboardButton("Удалить друга" , callback_data=f"{id}_friend_delete"))
             # markup.add(InlineKeyboardButton("Добавить друга" , callback_data=f"{id}_friend_add"))
@@ -612,7 +612,7 @@ def telegramSide():
         today = datetime.date.today()
         new_year = datetime.date(today.year + 1, 1, 1)
         days_left = (new_year - today).days
-        bot.send_message(message.from_user.id , text=menuText + f'\nДо нового года осталось {days_left} дней 🎄' , reply_markup= generateMenu(message.from_user.id))
+        bot.send_message(message.from_user.id , text=menuText , reply_markup= generateMenu(message.from_user.id))
     @bot.message_handler(commands= daysOfWeek["rus"] + daysOfWeek["eng"])    
     def LastHandler(message) -> None:
         manageMessages(id=message.from_user.id, messageId=message.id - 1)
