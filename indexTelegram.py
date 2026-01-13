@@ -510,10 +510,12 @@ def telegramSide():
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton('Вернуться в меню', callback_data='menu'))
                 try:
-                    bot.send_photo(chat_id, webside(allweek=True, wId=True, id=chat_id) , reply_markup= markup)
+                    photo =  webside(allweek=True, wId=True, id=chat_id)
+                    time.sleep(1)
+                    bot.send_photo(chat_id, photo , reply_markup= markup)
                 except Exception as e:
                     send_to_logger(chat_id , e)
-                    bot.send_message('К сожалению сейчас невозможно получить расписание на всю неделю. Попробуйте позже или посмотрите расписане на конкретный день' , reply_markup=markup)
+                    bot.send_message(chat_id , 'К сожалению сейчас невозможно получить расписание на всю неделю. Попробуйте позже или посмотрите расписание на конкретный день' , reply_markup=markup)
 
 
             update_users(chat_id)
