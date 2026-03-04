@@ -233,7 +233,7 @@ def getUserProfile(id , username = None , firstname = None):
             info = cursor.execute(f'SELECT * FROM users WHERE id = {id}')
             info = info.fetchone()
             db.close()
-            return f'''{"Вы подписанны на рассылку📬" if bool(info[-1]) else "Вы не подписанны на рассылку📭"}
+            return f'''{"Вы подписанны на рассылку📬" if bool(info[-1]) else "Вы не подписаны на рассылку📭"}
 Курс - {info[2]}
 Школа - {info[3]}
 Группа - {info[4]}'''
