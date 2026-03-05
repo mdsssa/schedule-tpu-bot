@@ -116,7 +116,7 @@ def generateMenu(id):
     try:
         markup = InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton('Расписание на сегодня📅', callback_data='schedule_today'))
-        # markup.add(InlineKeyboardButton('Расписание на завтра📆', callback_data='schedule_next_day'))
+        markup.add(InlineKeyboardButton('Расписание на завтра📆', callback_data='schedule_next_day'))
         profileb = InlineKeyboardButton(text="Профиль👤", callback_data="profile")
         friendsb = InlineKeyboardButton(text="Друзья👥", callback_data="friends")
         markup.row(profileb , friendsb)
@@ -453,6 +453,17 @@ def telegramSide():
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton('Вернуться в меню' , callback_data = 'menu'))
                 bot.send_message(chat_id , sche , reply_markup=markup)
+                deleteMessages()
+            elif data == 'schedule_next_day':
+                now = datetime.datetime.now().weekday() + 1
+                bot.send_message(chat_id, 'Пожалуйста , подождите...')
+                manageMessages(chat_id, call.message.id + 1)
+                sche, ex = webside(day_index=now, wId=True, id=chat_id)
+                if not ex:
+                    send_to_logger(sche, chat_id)
+                markup = InlineKeyboardMarkup()
+                markup.add(InlineKeyboardButton('Вернуться в меню', callback_data='menu'))
+                bot.send_message(chat_id, sche, reply_markup=markup)
                 deleteMessages()
             elif data == 'extra_info':
                 markup = InlineKeyboardMarkup()
