@@ -43,7 +43,27 @@ loggerChat = dotenv.dotenv_values('.env').get('LOG_GROUP')
 friendsCount = dotenv.dotenv_values('.env').get('MAX_FRIENDS')
 admins = dotenv.dotenv_values('.env').get('ADMINSIDS')
 
+def get_week_bounds(input_date):
+    days_to_monday = input_date.weekday()
+    week_start = input_date - datetime.timedelta(days=days_to_monday)
+    week_end = week_start + datetime.timedelta(days=5)
+    return str(week_start).split('-'), str(week_end).split('-')
 
+def get_week_parity(input_date=None, start_year  = datetime.datetime.now().year):
+    if input_date is None:
+        input_date = datetime.datetime.now().date()
+    if start_year is None:
+        if input_date.month >= 9:
+            start_year = input_date.year
+        else:
+            start_year = input_date.year - 1
+    start_date = datetime.datetime(start_year, 9, 1).date()
+    if input_date < start_date:
+        start_date = datetime.datetime(start_year - 1, 9, 1).date()
+    days_diff = (input_date - start_date).days
+    week_number = days_diff // 7 + 1
+
+    return (True , week_number) if week_number % 2 != 0 else (False, week_number)
 menulayout = {"Профиль" : 'profile' ,
               "Друзья" : 'friends' ,
               "Расписание": 'schedule' ,
@@ -95,7 +115,8 @@ def makeMarkupWithLayout(layout:dict):
 def generateMenu(id):
     try:
         markup = InlineKeyboardMarkup()
-        markup.add(InlineKeyboardButton('Расписание на сегодня📆' , callback_data='schedule_today'))
+        markup.add(InlineKeyboardButton('Расписание на сегодня📅', callback_data='schedule_today'))
+        # markup.add(InlineKeyboardButton('Расписание на завтра📆', callback_data='schedule_next_day'))
         profileb = InlineKeyboardButton(text="Профиль👤", callback_data="profile")
         friendsb = InlineKeyboardButton(text="Друзья👥", callback_data="friends")
         markup.row(profileb , friendsb)
@@ -294,8 +315,13 @@ def telegramSide():
                 bot.send_message(call.message.chat.id , sche[0] , reply_markup=markup)
             elif data == 'schedule':
                 try:
-                    bot.send_message(call.message.chat.id, "Выберите день недели:", reply_markup=genWeekMarkup())
+                    week = get_week_parity(datetime.datetime.now().date())
+                    weekparity = "Нечетная" if week[0] else "Четная"
+                    start , end = get_week_bounds(datetime.datetime.now().date())
+                    weekbounds = f"{start[2]}.{start[1]}.{start[0]} - {end[2]}.{end[1]}.{end[0]}"
+                    bot.send_message(call.message.chat.id, f"{weekparity} учебная неделя(№{week[1]})\n{weekbounds}\nВыберите день недели:", reply_markup=genWeekMarkup())
                 except Exception as e:
+                    print(e)
                     send_to_logger(e, call.message.chat.id)
             elif data == 'profile':
                 markup , sub = gen_profile_markup(call.message.chat.id)
