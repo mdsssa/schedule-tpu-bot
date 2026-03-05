@@ -260,7 +260,7 @@ def telegramSide():
                     markup.add(InlineKeyboardButton(weekDay.capitalize() , callback_data=f"{f"weekDay_{i}" if not forFriend else f'FweekDay_{i}_{id}_{friend_index}'}"))
                 else:
                     markup.add(InlineKeyboardButton(weekDay.capitalize(),
-                                                    callback_data=f"{f"nweekDay_{i}" if not forFriend else f'FweekDay_{i}_{id}_{friend_index}'}"))
+                                                    callback_data=f"{f"nweekDay_{i}" if not forFriend else f'nFweekDay_{i}_{id}_{friend_index}'}"))
             if not not_this_week:
                 markup.add(InlineKeyboardButton("Следующая неделя➡️" , callback_data = 'next_week_schedule'))
             else:
@@ -593,6 +593,35 @@ def telegramSide():
                 except Exception as e:
                     print(e)
                     send_to_logger(e, call.message.chat.id)
+            elif data.startswith('nweekDay_'):
+                dayIndex = int(data.split("_")[1])
+                bot.send_message(chat_id, "Пожалуйста , подождите...")
+                manageMessages(id=chat_id, messageId=call.message.id + 1)
+                sche = webside(day_index=dayIndex, wId=True, id=call.message.chat.id , next_week=True)
+                deleteMessages()
+                if not sche[1]:
+                    send_to_logger(sche[0], isntanexeption=True, id=call.message.chat.id)
+                markup = InlineKeyboardMarkup()
+                markup.add(InlineKeyboardButton('Вернуться в меню', callback_data='menu'))
+                bot.send_message(call.message.chat.id, sche[0], reply_markup=markup)
+            elif data.startswith('nFweekDay_'):
+                frId = data.split("_")[-1]
+                weekDay = int(data.split("_")[1])
+                friend = getFriend(chat_id, int(frId[-1]))[0]
+                bot.send_message(chat_id, 'Пожалуйста , подождите...')
+                try:
+                    manageMessages(chat_id, call.message.id + 1)
+                except Exception as e:
+                    pass
+                sche, ex = webside(day_index=weekDay, course=friend[2], group=friend[4], school=friend[3],
+                                   forFriend=True , next_week=True)
+                if not ex:
+                    send_to_logger(sche, chat_id)
+                markup = InlineKeyboardMarkup()
+                markup.add(InlineKeyboardButton("Друзья", callback_data=f"friends"))
+                markup.add(InlineKeyboardButton('Вернуться в меню', callback_data=f"menu"))
+                deleteMessages()
+                bot.send_message(chat_id, sche, reply_markup=markup)
             print(data)
             update_users(chat_id)
 
