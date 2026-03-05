@@ -43,10 +43,14 @@ loggerChat = dotenv.dotenv_values('.env').get('LOG_GROUP')
 friendsCount = dotenv.dotenv_values('.env').get('MAX_FRIENDS')
 admins = dotenv.dotenv_values('.env').get('ADMINSIDS')
 
-def get_week_bounds(input_date):
+def get_week_bounds(input_date, next_week=False):
     days_to_monday = input_date.weekday()
     week_start = input_date - datetime.timedelta(days=days_to_monday)
-    week_end = week_start + datetime.timedelta(days=5)
+
+    if next_week:
+        week_start = week_start + datetime.timedelta(days=7)
+
+    week_end = week_start + datetime.timedelta(days=6)
     return str(week_start).split('-'), str(week_end).split('-')
 
 def get_week_parity(input_date=None, start_year  = datetime.datetime.now().year):
@@ -244,15 +248,23 @@ def telegramSide():
         except Exception as e:
             send_to_logger(e)
 
-    def genWeekMarkup(forFriend = False , id = 0 , friend_index = 0):
+    def genWeekMarkup(forFriend = False , id = 0 , friend_index = 0 , not_this_week = False):
         try:
             markup = InlineKeyboardMarkup()
             markup.row_width = 3
             now = datetime.datetime.now().weekday()
             for i, weekDay in enumerate(daysOfWeek["rus"]):
-                if i == now:
+                if i == now and not not_this_week:
                     weekDay += ' (Сегодня)'
-                markup.add(InlineKeyboardButton(weekDay.capitalize() , callback_data=f"{f"weekDay_{i}" if not forFriend else f'FweekDay_{i}_{id}_{friend_index}'}"))
+                if not not_this_week:
+                    markup.add(InlineKeyboardButton(weekDay.capitalize() , callback_data=f"{f"weekDay_{i}" if not forFriend else f'FweekDay_{i}_{id}_{friend_index}'}"))
+                else:
+                    markup.add(InlineKeyboardButton(weekDay.capitalize(),
+                                                    callback_data=f"{f"nweekDay_{i}" if not forFriend else f'FweekDay_{i}_{id}_{friend_index}'}"))
+            if not not_this_week:
+                markup.add(InlineKeyboardButton("Следующая неделя➡️" , callback_data = 'next_week_schedule'))
+            else:
+                markup.add(InlineKeyboardButton("Эта неделя⬅️" , callback_data = 'schedule'))
             markup.add(InlineKeyboardButton('Вернуться в меню' , callback_data=f"menu"))
             return markup
         except Exception as e:
@@ -335,7 +347,12 @@ def telegramSide():
                     bot.send_message(call.message.chat.id , f'Кол-во ваших друзей - {f} , максимум - {friendsCount}. А вот и {"они" if f > 1 else "он"}:', reply_markup=markup)
             elif data == "menu":
                 today = datetime.date.today()
+                week = get_week_parity(datetime.datetime.now().date())
+                weekparity = "нечетная" if week[0] else "четная"
+                start, end = get_week_bounds(datetime.datetime.now().date())
+                weekbounds = f"{start[2]}.{start[1]}.{start[0]} - {end[2]}.{end[1]}.{end[0]}"
                 new_year = datetime.date(today.year + 1, 1, 1)
+                menuText = f'Вы в главном меню!\nСейчас {weekparity} учебная неделя(№{week[1]})\n{weekbounds}'
                 days_left = (new_year - today).days
                 bot.send_message(call.message.chat.id,text=menuText,
                                      reply_markup=generateMenu(chat_id))
@@ -564,7 +581,19 @@ def telegramSide():
                 except Exception as e:
                     send_to_logger(chat_id , e)
                     bot.send_message(chat_id , 'К сожалению сейчас невозможно получить расписание на всю неделю. Попробуйте позже или посмотрите расписание на конкретный день' , reply_markup=markup)
-
+            elif data == 'next_week_schedule':
+                try:
+                    week = get_week_parity(datetime.datetime.now().date())
+                    weekparity = "Четная" if week[0] else "Нечетная"
+                    start, end = get_week_bounds(datetime.datetime.now().date() , next_week=True)
+                    weekbounds = f"{start[2]}.{start[1]}.{start[0]} - {end[2]}.{end[1]}.{end[0]}"
+                    bot.send_message(call.message.chat.id,
+                                     f"{weekparity} учебная неделя(№{int(week[1]) + 1})\n{weekbounds}\nВыберите день недели:",
+                                     reply_markup=genWeekMarkup(not_this_week=True))
+                except Exception as e:
+                    print(e)
+                    send_to_logger(e, call.message.chat.id)
+            print(data)
             update_users(chat_id)
 
         except Exception as e:
@@ -661,6 +690,13 @@ def telegramSide():
         today = datetime.date.today()
         new_year = datetime.date(today.year + 1, 1, 1)
         days_left = (new_year - today).days
+        today = datetime.date.today()
+        week = get_week_parity(datetime.datetime.now().date())
+        weekparity = "нечетная" if week[0] else "четная"
+        start, end = get_week_bounds(datetime.datetime.now().date())
+        weekbounds = f"{start[2]}.{start[1]}.{start[0]} - {end[2]}.{end[1]}.{end[0]}"
+        new_year = datetime.date(today.year + 1, 1, 1)
+        menuText = f'Вы в главном меню!\nСейчас {weekparity} учебная неделя(№{week[1]})\n{weekbounds}'
         bot.send_message(message.from_user.id , text=menuText , reply_markup= generateMenu(message.from_user.id))
     @bot.message_handler(commands= daysOfWeek["rus"] + daysOfWeek["eng"])    
     def LastHandler(message) -> None:
