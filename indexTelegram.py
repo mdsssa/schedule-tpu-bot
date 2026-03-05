@@ -124,6 +124,7 @@ def generateMenu(id):
         if str(id) in admins:
             markup.add(InlineKeyboardButton('Админское меню📦' , callback_data="adminMenu"))
         markup.add(InlineKeyboardButton('Расписание на всю неделю📄', callback_data='schedule_week'))
+        markup.add(InlineKeyboardButton("Расписание на всю следующую неделю📄" , callback_data='schedule_next_week'))
         markup.add(InlineKeyboardButton('🔹Больше информации о проекте🔹' , callback_data="extra_info"))
         return markup
     except Exception as e:
@@ -553,7 +554,16 @@ def telegramSide():
                 except Exception as e:
                     send_to_logger(chat_id , e)
                     bot.send_message(chat_id , 'К сожалению сейчас невозможно получить расписание на всю неделю. Попробуйте позже или посмотрите расписание на конкретный день' , reply_markup=markup)
-
+            elif data == "schedule_next_week":
+                markup = InlineKeyboardMarkup()
+                markup.add(InlineKeyboardButton('Вернуться в меню', callback_data='menu'))
+                try:
+                    photo =  webside(allweek=True, wId=True, id=chat_id , next_week=True)
+                    time.sleep(1)
+                    bot.send_photo(chat_id, photo , reply_markup= markup)
+                except Exception as e:
+                    send_to_logger(chat_id , e)
+                    bot.send_message(chat_id , 'К сожалению сейчас невозможно получить расписание на всю неделю. Попробуйте позже или посмотрите расписание на конкретный день' , reply_markup=markup)
 
             update_users(chat_id)
 

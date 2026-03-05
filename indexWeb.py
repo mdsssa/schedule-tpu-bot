@@ -267,7 +267,7 @@ def get_driver():
     )
 
     return driver
-def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 1 , wId = False , id = None , forFriend = False , optionsOn = None , allweek = False , raw = False):
+def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 1 , wId = False , id = None , forFriend = False , optionsOn = None , allweek = False , raw = False , next_week = False):
     try:
         if wId:
             if id != None:
@@ -291,6 +291,8 @@ def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 
             driver.find_element(By.XPATH, f"//*[contains(text(), '{course} курс')]").click()
             driver.find_element(By.XPATH, f"//*[contains(text(), '{group}')]").click()
             speciality = driver.find_element(By.XPATH , '/html/body/div[2]/div/div/div[2]/div[1]/div[2]/div/div[1]/div[2]/ul/li[1]/a').text
+            if next_week:
+                driver.find_element(By.XPATH , '/html/body/div[2]/div/div/div[2]/div[1]/div[2]/ul/li[3]/a').click()
             week = driver.find_element(By.XPATH , '/html/body/div[2]/div/div/div[2]/h4').text
             schedule = driver.find_element(By.XPATH , '/html/body/div[2]/div/div/div[2]/div[3]/table')
             rows = schedule.find_elements(By.TAG_NAME, 'tr')
