@@ -822,9 +822,9 @@ def distributionSide():
                             pass
                             new_year_text = '''С новым годом!🎄Желаю вам хорошо провести время и так же хорошо сдать сессию!
                             '''
+                            spam_text = f'У нас есть канал в телеграме!\nТам выкладываются новости бота , а так же там вы можете оставлять свои идеи по улучшению проекта👨‍💻\n@scheduletpunews'
                             # bot.send_message(user , new_year_text)
                             bot.send_message(user , f'Расписание для {school} , {course} курс , группа {group}:\n\n{schedule[0]}' , reply_markup= markup)
-                            #bot.send_message(user , f'У нас есть канал в телеграме!\nТам выкладываются новости бота , а так же там вы можете оставлять свои идеи по улучшению проекта👨‍💻\n@scheduletpunews' , reply_markup= markup)
                         except Exception as e:
                             if str(e).lower() == 'A request to the Telegram API was unsuccessful. Error code: 403. Description: Forbidden: bot was blocked by the user'.lower():
                                 deleteUser(user)
