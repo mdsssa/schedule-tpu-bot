@@ -175,7 +175,7 @@ def get_schedule_week(title, schedule_data):
     wm_w = wm_bbox[2] - wm_bbox[0]
     wm_h = wm_bbox[3] - wm_bbox[1]
     draw.text((WIDTH - wm_w - 50, HEIGHT - wm_h - 40), WATERMARK, font=watermark_font, fill=(140, 140, 140))
-
+    sleep(0.77)
     return img
 
 def kill_chrome_processes():
