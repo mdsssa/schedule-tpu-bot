@@ -729,8 +729,8 @@ def telegramSide():
         bot.send_message(message.from_user.id , text=menuText , reply_markup= generateMenu(message.from_user.id))
     @bot.message_handler(commands= ['ping'])
     def pingHandler(message:telebot) -> None:
-        start_time = int(time.time())
-        bot.send_message(message.from_user.id , f'pong!\n{int(time.time()) - start_time}')
+        start_time = float(time.time())
+        bot.send_message(message.from_user.id , f'pong!\n{float(time.time()) - start_time}')
     @bot.message_handler(commands= daysOfWeek["rus"] + daysOfWeek["eng"])    
     def LastHandler(message) -> None:
         manageMessages(id=message.from_user.id, messageId=message.id - 1)
