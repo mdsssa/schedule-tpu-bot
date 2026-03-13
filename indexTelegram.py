@@ -16,20 +16,34 @@ from io import BytesIO
 from telebot import apihelper
 import subprocess
 import platform
+import socket
+import time
+import requests
 
 
 def ping_telegram_api():
-    param = '-n' if platform.system().lower() == 'windows' else '-c'
-    command = ['ping', param, '4', 'api.telegram.org']
-
+    # Способ 1: Простой socket connection
     try:
-        output = subprocess.run(command, capture_output=True, text=True, timeout=10)
-        if 'avg' in output.stdout:
-            avg_line = [l for l in output.stdout.split('\n') if 'avg' in l][0]
-            avg_ping = avg_line.split('=')[-1].split('/')[1]
-            return f"{avg_ping}"
+        start = time.time()
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(5)
+        sock.connect(("api.telegram.org", 443))
+        latency = (time.time() - start) * 1000
+        TCP = f"TCP подключение: {latency:.2f} мс"
+        sock.close()
     except Exception as e:
-        return f"Ошибка: {e}"
+        TCP = f"TCP ошибка: {e}"
+
+    # Способ 2: HTTP запрос
+    try:
+        start = time.time()
+        r = requests.get("https://api.telegram.org", timeout=5)
+        latency = (time.time() - start) * 1000
+        http = f"HTTP ответ: {latency:.2f} мс"
+    except Exception as e:
+        http = f"HTTP ошибка: {e}"
+    return TCP, http
+
 
 apihelper.WRITE_TIMEOUT = 120
 makeDb()
@@ -746,7 +760,7 @@ def telegramSide():
         bot.send_message(message.from_user.id , text=menuText , reply_markup= generateMenu(message.from_user.id))
     @bot.message_handler(commands= ['ping'])
     def pingHandler(message:telebot) -> None:
-        bot.send_message(message.from_user.id , f'pong!\n{ping_telegram_api()}')
+        bot.send_message(message.from_user.id , f'pong!\n{str(ping_telegram_api())}')
     @bot.message_handler(commands= daysOfWeek["rus"] + daysOfWeek["eng"])    
     def LastHandler(message) -> None:
         manageMessages(id=message.from_user.id, messageId=message.id - 1)
