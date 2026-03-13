@@ -13,6 +13,8 @@ import sys
 import traceback
 import qrcode
 from io import BytesIO
+from telebot import apihelper
+apihelper.WRITE_TIMEOUT = 120
 makeDb()
 donate_link = 'https://dalink.to/medisssa'
 print(entry_art)
@@ -725,6 +727,10 @@ def telegramSide():
         new_year = datetime.date(today.year + 1, 1, 1)
         menuText = f'Вы в главном меню!\nСейчас {weekparity} учебная неделя(№{week[1]})\n{weekbounds}'
         bot.send_message(message.from_user.id , text=menuText , reply_markup= generateMenu(message.from_user.id))
+    @bot.message_handler(commands= ['ping'])
+    def pingHandler(message:telebot) -> None:
+        start_time = time.time()
+        bot.send_message(message.from_user.id , f'{time.time() - start_time}')
     @bot.message_handler(commands= daysOfWeek["rus"] + daysOfWeek["eng"])    
     def LastHandler(message) -> None:
         manageMessages(id=message.from_user.id, messageId=message.id - 1)
