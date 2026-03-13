@@ -37,7 +37,7 @@ def ping_telegram_api():
     # Способ 2: HTTP запрос
     try:
         start = time.time()
-        r = requests.get("https://api.telegram.org", timeout=5)
+        r = requests.get("https://api.telegram.org", timeout=30)
         latency = (time.time() - start) * 1000
         http = f"HTTP ответ: {latency:.2f} мс"
     except Exception as e:
