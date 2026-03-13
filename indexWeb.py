@@ -315,7 +315,8 @@ def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 
         if allweek:
             try:
                 return get_schedule_week(title= week , schedule_data=data)
-            except Exception:
+            except Exception as e :
+                print(e)
                 return f"К сожалению , сейчас невозможно получить информацию с сайта ТПУ😰\nЭта ошибка обычно единичная и больше не повторяется , попробуйте еще раз!", False
         dataspec = getSpecificDay(data , day_index)
         if True:

@@ -38,7 +38,7 @@ checkFrequency = 10 #проверка/минуты
 messagesToDelete = []
 
 
-token = dotenv.dotenv_values('.env').get('TOKEN')
+TOKEN = dotenv.dotenv_values('.env').get('TOKEN')
 loggerChat = dotenv.dotenv_values('.env').get('LOG_GROUP')
 friendsCount = dotenv.dotenv_values('.env').get('MAX_FRIENDS')
 admins = dotenv.dotenv_values('.env').get('ADMINSIDS')
@@ -76,7 +76,7 @@ profileLayout = {
     "Отписаться от рассылки:" : 'unsub'
 
 }
-bot = telebot.TeleBot(token= token)
+bot = telebot.TeleBot(TOKEN)
 #id username course school group sub
 def save_log(ex , id):
     try:
@@ -570,7 +570,7 @@ def telegramSide():
                     bot.send_photo(chat_id, photo , reply_markup= markup)
                 except Exception as e:
                     send_to_logger(chat_id , e)
-                    bot.send_message(chat_id , 'К сожалению сейчас невозможно получить расписание на всю неделю. Попробуйте позже или посмотрите расписание на конкретный день' , reply_markup=markup)
+                    bot.send_message(chat_id , 'К сожалению сейчас невозможно получить расписание на всю неделю. Попробуйте позже или посмотрите расписание на конкретный день.\nСкорее всего ошибка связанна с замедлением Telegram API в России , из-за чего бот практически не может отправлять фотографии😰' , reply_markup=markup)
             elif data == "schedule_next_week":
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton('Вернуться в меню', callback_data='menu'))
@@ -580,7 +580,7 @@ def telegramSide():
                     bot.send_photo(chat_id, photo , reply_markup= markup)
                 except Exception as e:
                     send_to_logger(chat_id , e)
-                    bot.send_message(chat_id , 'К сожалению сейчас невозможно получить расписание на всю неделю. Попробуйте позже или посмотрите расписание на конкретный день' , reply_markup=markup)
+                    bot.send_message(chat_id , 'К сожалению сейчас невозможно получить расписание на всю неделю. Попробуйте позже или посмотрите расписание на конкретный день\nСкорее всего ошибка связанна с замедлением Telegram API в России , из-за чего бот практически не может отправлять фотографии😰' , reply_markup=markup)
             elif data == 'next_week_schedule':
                 try:
                     week = get_week_parity(datetime.datetime.now().date())
@@ -622,9 +622,7 @@ def telegramSide():
                 markup.add(InlineKeyboardButton('Вернуться в меню', callback_data=f"menu"))
                 deleteMessages()
                 bot.send_message(chat_id, sche, reply_markup=markup)
-            print(data)
             update_users(chat_id)
-
         except Exception as e:
             send_to_logger(e , call.message.chat.id)
 
@@ -789,7 +787,7 @@ def telegramSide():
                 if str(chat_id) in FriendRegistration.keys():
                     del FriendRegistration[str(chat_id)]
         deleteMessages()
-    bot.infinity_polling()
+    bot.polling(none_stop=True, interval=0, timeout=100)
     
     
 
