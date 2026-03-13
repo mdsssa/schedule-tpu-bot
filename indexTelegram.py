@@ -14,6 +14,23 @@ import traceback
 import qrcode
 from io import BytesIO
 from telebot import apihelper
+import subprocess
+import platform
+
+
+def ping_telegram_api():
+    param = '-n' if platform.system().lower() == 'windows' else '-c'
+    command = ['ping', param, '4', 'api.telegram.org']
+
+    try:
+        output = subprocess.run(command, capture_output=True, text=True, timeout=10)
+        if 'avg' in output.stdout:
+            avg_line = [l for l in output.stdout.split('\n') if 'avg' in l][0]
+            avg_ping = avg_line.split('=')[-1].split('/')[1]
+            return f"{avg_ping}"
+    except Exception as e:
+        return f"Ошибка: {e}"
+
 apihelper.WRITE_TIMEOUT = 120
 makeDb()
 donate_link = 'https://dalink.to/medisssa'
@@ -729,8 +746,7 @@ def telegramSide():
         bot.send_message(message.from_user.id , text=menuText , reply_markup= generateMenu(message.from_user.id))
     @bot.message_handler(commands= ['ping'])
     def pingHandler(message:telebot) -> None:
-        start_time = float(time.time()) * 1000
-        bot.send_message(message.from_user.id , f'pong!\n{float(time.time()) * 1000 - start_time}')
+        bot.send_message(message.from_user.id , f'pong!\n{ping_telegram_api()}')
     @bot.message_handler(commands= daysOfWeek["rus"] + daysOfWeek["eng"])    
     def LastHandler(message) -> None:
         manageMessages(id=message.from_user.id, messageId=message.id - 1)
