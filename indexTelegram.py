@@ -18,7 +18,7 @@ import socket
 import time
 import requests
 
-proxy = False
+proxy = True
 
 
 if proxy:
