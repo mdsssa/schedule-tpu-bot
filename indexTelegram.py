@@ -29,10 +29,6 @@ if proxy:
     PROXY_LOGIN = dotenv.dotenv_values('.env').get('PROXY_LOGIN')
     PROTOCOL = dotenv.dotenv_values('.env').get('PROTOCOL')
     PROXY_PASSWORD = dotenv.dotenv_values('.env').get('PROXY_PASSWORD')
-    # apihelper.proxy = {
-    #     'http': f'{PROTOCOL}://{PROXY_IP}:{PROXY_PORT}',
-    #     'https': f'{PROTOCOL}://{PROXY_IP}:{PROXY_PORT}'
-    # }
     apihelper.proxy = {
         'http': f'{PROTOCOL}://{PROXY_LOGIN}:{PROXY_PASSWORD}@{PROXY_IP}:{PROXY_PORT}',
         'https': f'{PROTOCOL}://{PROXY_LOGIN}:{PROXY_PASSWORD}@{PROXY_IP}:{PROXY_PORT}'
