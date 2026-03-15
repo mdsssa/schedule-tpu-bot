@@ -31,8 +31,8 @@ if proxy:
     #     'https': f'{PROTOCOL}://{PROXY_IP}:{PROXY_PORT}'
     # }
     apihelper.proxy = {
-        'http': 'socks5h://172.17.0.1:1080',
-        'https': 'socks5h://172.17.0.1:1080'
+        'http': 'socks5://172.17.0.1:1080',
+        'https': 'socks5://172.17.0.1:1080'
     }
 print("=== ДИАГНОСТИКА ПРОКСИ ===")
 print(f"Настройки прокси: {apihelper.proxy}")
