@@ -23,7 +23,7 @@ proxy = True
 
 if proxy:
     PROXY_IP = dotenv.dotenv_values('.env').get('PROXY_IP')
-    PROXY_PORT = dotenv.dotenv_values('.env').get('PROXY_PORT')
+    PROXY_PORT = int(dotenv.dotenv_values('.env').get('PROXY_PORT'))
     PROXY_SECRET = dotenv.dotenv_values('.env').get('PROXY_SECRET')
     PROTOCOL = dotenv.dotenv_values('.env').get('PROTOCOL')
     apihelper.proxy = {
