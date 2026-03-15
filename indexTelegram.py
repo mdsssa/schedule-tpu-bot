@@ -22,13 +22,17 @@ proxy = False
 
 
 if proxy:
-    PROXY_IP = dotenv.dotenv_values('.env').get('PROXY_IP')
-    PROXY_PORT = int(dotenv.dotenv_values('.env').get('PROXY_PORT'))
-    PROXY_SECRET = dotenv.dotenv_values('.env').get('PROXY_SECRET')
-    PROTOCOL = dotenv.dotenv_values('.env').get('PROTOCOL')
+    # PROXY_IP = dotenv.dotenv_values('.env').get('PROXY_IP')
+    # PROXY_PORT = int(dotenv.dotenv_values('.env').get('PROXY_PORT'))
+    # PROXY_SECRET = dotenv.dotenv_values('.env').get('PROXY_SECRET')
+    # PROTOCOL = dotenv.dotenv_values('.env').get('PROTOCOL')
+    # apihelper.proxy = {
+    #     'http': f'{PROTOCOL}://{PROXY_IP}:{PROXY_PORT}',
+    #     'https': f'{PROTOCOL}://{PROXY_IP}:{PROXY_PORT}'
+    # }
     apihelper.proxy = {
-        'http': f'{PROTOCOL}://{PROXY_IP}:{PROXY_PORT}',
-        'https': f'{PROTOCOL}://{PROXY_IP}:{PROXY_PORT}'
+        'http': 'socks5h://127.0.0.1:1080',
+        'https': 'socks5h://127.0.0.1:1080'
     }
 def ping_telegram_api():
     try:
