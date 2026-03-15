@@ -17,9 +17,14 @@ from telebot import apihelper
 import socket
 import time
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.contrib.socks import SOCKSProxyManager
+import socks
 
+
+# СОЗДАЕМ РАБОЧУЮ СЕССИЮ
+session = requests.Session()
 proxy = True
-
 
 if proxy:
     # PROXY_IP = dotenv.dotenv_values('.env').get('PROXY_IP')
@@ -34,6 +39,16 @@ if proxy:
         'http': 'socks5://172.17.0.1:1080',
         'https': 'socks5://172.17.0.1:1080'
     }
+
+
+apihelper.READ_TIMEOUT = 60
+apihelper.CONNECT_TIMEOUT = 30
+
+# ВАЖНО: Передаем нашу сессию в telebot
+from telebot import util
+util.session = session
+
+
 print("=== ДИАГНОСТИКА ПРОКСИ ===")
 print(f"Настройки прокси: {apihelper.proxy}")
 print(f"Таймауты: READ={apihelper.READ_TIMEOUT}, CONNECT={apihelper.CONNECT_TIMEOUT}")
