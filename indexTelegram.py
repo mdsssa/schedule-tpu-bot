@@ -34,6 +34,25 @@ if proxy:
         'http': 'socks5h://127.0.0.1:1080',
         'https': 'socks5h://127.0.0.1:1080'
     }
+
+print("=== ДИАГНОСТИКА ПРОКСИ ===")
+print(f"Настройки прокси: {apihelper.proxy}")
+print(f"Таймауты: READ={apihelper.READ_TIMEOUT}, CONNECT={apihelper.CONNECT_TIMEOUT}")
+
+# Тест соединения через прокси
+import requests
+try:
+    r = requests.get(
+        "https://api.telegram.org",
+        proxies={'http': 'socks5h://127.0.0.1:1080', 'https': 'socks5h://127.0.0.1:1080'},
+        timeout=10
+    )
+    print(f"✅ Тестовый запрос успешен: {r.status_code}")
+except Exception as e:
+    print(f"❌ Тестовый запрос failed: {e}")
+print("==========================")
+
+
 def ping_telegram_api():
     try:
         start = time.time()
@@ -119,7 +138,16 @@ profileLayout = {
     "Отписаться от рассылки:" : 'unsub'
 
 }
+
+
+
+
 bot = telebot.TeleBot(TOKEN)
+
+
+
+
+
 #id username course school group sub
 def save_log(ex , id):
     try:
