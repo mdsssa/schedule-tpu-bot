@@ -31,10 +31,9 @@ if proxy:
     #     'https': f'{PROTOCOL}://{PROXY_IP}:{PROXY_PORT}'
     # }
     apihelper.proxy = {
-        'http': 'socks5h://127.0.0.1:1080',
-        'https': 'socks5h://127.0.0.1:1080'
+        'http': 'socks5h://host.docker.internal:1080',
+        'https': 'socks5h://host.docker.internal:1080'
     }
-
 print("=== ДИАГНОСТИКА ПРОКСИ ===")
 print(f"Настройки прокси: {apihelper.proxy}")
 print(f"Таймауты: READ={apihelper.READ_TIMEOUT}, CONNECT={apihelper.CONNECT_TIMEOUT}")
