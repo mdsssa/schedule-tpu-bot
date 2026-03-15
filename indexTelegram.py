@@ -14,15 +14,23 @@ import traceback
 import qrcode
 from io import BytesIO
 from telebot import apihelper
-import subprocess
-import platform
 import socket
 import time
 import requests
 
+proxy = True
 
+
+if proxy:
+    PROXY_IP = dotenv.dotenv_values('.env').get('PROXY_IP')
+    PROXY_PORT = dotenv.dotenv_values('.env').get('PROXY_PORT')
+    PROXY_SECRET = dotenv.dotenv_values('.env').get('PROXY_SECRET')
+    PROTOCOL = dotenv.dotenv_values('.env').get('PROTOCOL')
+    apihelper.proxy = {
+        'http': f'{PROTOCOL}://{PROXY_IP}:{PROXY_PORT}',
+        'https': f'{PROTOCOL}://{PROXY_IP}:{PROXY_PORT}'
+    }
 def ping_telegram_api():
-    # Способ 1: Простой socket connection
     try:
         start = time.time()
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -33,8 +41,6 @@ def ping_telegram_api():
         sock.close()
     except Exception as e:
         TCP = f"TCP ошибка: {e}"
-
-    # Способ 2: HTTP запрос
     try:
         start = time.time()
         r = requests.get("https://api.telegram.org", timeout=30)
