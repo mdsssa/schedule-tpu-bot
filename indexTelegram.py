@@ -860,7 +860,7 @@ def telegramSide():
                 if str(chat_id) in FriendRegistration.keys():
                     del FriendRegistration[str(chat_id)]
         deleteMessages()
-    bot.polling(none_stop=True, interval=0, timeout=100)
+    bot.polling(none_stop=True, interval=0, timeout=100 , skip_pending=True)
     
     
 
