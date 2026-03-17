@@ -845,7 +845,7 @@ def telegramSide():
                 if str(chat_id) in FriendRegistration.keys():
                     del FriendRegistration[str(chat_id)]
         deleteMessages()
-    bot.polling(none_stop=True, interval=0, timeout=100 , skip_pending=True)
+    bot.polling(non_stop=True, interval=0, timeout=100 , skip_pending=True)
     
     
 
@@ -853,7 +853,7 @@ def distributionSide():
     while True:
         try:
             current_day = datetime.datetime.now().day
-            if DateManager(datenow= current_day ):
+            if DateManager(datenow= current_day + 1):
                 bot.send_message(loggerChat , f'Уникальных юзеров: {get_unique()} , юзеров : {get_usersUse()}')
                 clearUsers()
                 users = getAllSubscribedUsers()
