@@ -140,7 +140,6 @@ def getAllSubscribedUsers(only_ids = False) -> list:
             info = cursor.execute('SELECT id FROM users WHERE sub = 1')
         else:
             info = cursor.execute('SELECT * FROM users WHERE sub = 1')
-
         a = info.fetchall()
         db.close()
         return a

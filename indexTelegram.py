@@ -721,9 +721,10 @@ def telegramSide():
     @bot.message_handler(commands=['DIS'])
     def distr(message):
         dis_text = 'Бот снова полностью функционирует! Можете пользоваться им снова!'
-        users = getAllSubscribedUsers(only_ids=True)[0]
+        users = getAllSubscribedUsers(only_ids=False)
         print(users)
-        for id in users:
+        for data in users:
+            id = data[0]
             bot.send_message(id , dis_text)
     @bot.message_handler(commands=['subscribe' , 'sub' , 'подписаться'])
     def subscribe_handler(message):
