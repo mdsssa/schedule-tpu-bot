@@ -132,11 +132,15 @@ def getUserInfo(id):
         return a
     except Exception as e:
         r(f"{e}")
-def getAllSubscribedUsers() -> list:
+def getAllSubscribedUsers(only_ids = False) -> list:
     try:
         db = sql.connect(stPatch)
         cursor = db.cursor()
-        info = cursor.execute('SELECT * FROM users WHERE sub = 1')
+        if only_ids:
+            info = cursor.execute('SELECT id FROM users WHERE sub = 1')
+        else:
+            info = cursor.execute('SELECT * FROM users WHERE sub = 1')
+
         a = info.fetchall()
         db.close()
         return a

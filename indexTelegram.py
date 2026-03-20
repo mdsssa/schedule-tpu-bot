@@ -718,7 +718,13 @@ def telegramSide():
             FriendRegistration[str(chat_id)]["group"] = group
             bot.send_message(chat_id , 'Хорошо , теперь введи его имя :)')
 
-
+    @bot.message_handler(commands=['DIS'])
+    def distr(message):
+        dis_text = 'Бот снова полностью функционирует! Можете пользоваться им снова!'
+        users = getAllSubscribedUsers(only_ids=True)[0]
+        print(users)
+        for id in users:
+            bot.send_message(id , dis_text)
     @bot.message_handler(commands=['subscribe' , 'sub' , 'подписаться'])
     def subscribe_handler(message):
         manageMessages(id=message.from_user.id, messageId=message.id - 1)
@@ -748,8 +754,6 @@ def telegramSide():
             bot.send_message(message.chat.id, f'Произошла ошибка при отписке: {e}')
             send_to_logger(e , message.from_user.id)
     @bot.message_handler(commands= ['delete'])
-
-
     def deleteHandler(message) -> None:
         manageMessages(id=message.from_user.id, messageId=message.id - 1)
         try:
