@@ -725,7 +725,8 @@ def telegramSide():
         print(users)
         for data in users:
             id = data[0]
-            bot.send_message(id , dis_text)
+            if int(id) != 1077637409:
+                bot.send_message(id , dis_text)
     @bot.message_handler(commands=['subscribe' , 'sub' , 'подписаться'])
     def subscribe_handler(message):
         manageMessages(id=message.from_user.id, messageId=message.id - 1)
