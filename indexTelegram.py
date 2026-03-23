@@ -20,6 +20,8 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.contrib.socks import SOCKSProxyManager
 import socks
+import os
+
 proxy = True
 
 
@@ -825,7 +827,6 @@ def telegramSide():
         manageMessages(id=message.from_user.id, messageId=message.id - 1)
         manageMessages(id=message.from_user.id, messageId=message.id )
         chat_id = message.chat.id
-        #{'873729188': {'id': 873729188, 'course': '2', 'school': 'ИШПР', 'group': '234', 'name': '234'}}
         if str(chat_id) in FriendRegistration.keys():
             FriendRegistration[str(message.chat.id)]['name'] = message.text
             try:

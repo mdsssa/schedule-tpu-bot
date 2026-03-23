@@ -13,21 +13,7 @@ from PIL import Image, ImageDraw, ImageFont
 import textwrap
 import os
 import telebot
-# markup = InlineKeyboardMarkup()
-#                 markup.add(InlineKeyboardButton("MENU", callback_data=f"adminMenu"))
-#                 used_lects = []
-#                 types_ = ['(ПР)', '(А)'  '(ЛК)']
-#                 data, isit = webside(wId=True, id=chat_id, raw=True)
-#                 for i in data:
-#                     del i[0]
-#                     for j, lecture in enumerate(i):
-#                         lecture_data = lecture.split('\n')
-#                         lecture = lecture_data[0]
-#                         if True in [True if i == lecture_data[0] else False for i in types_]:
-#                             lecture = f'{lecture_data[1]} {lecture_data[0]}'
-#                         if not lecture in used_lects:
-#                             used_lects.append(lecture)
-#                             markup.add(InlineKeyboardButton(lecture, callback_data=f"del_l_{lecture}"))
+
 def get_pairs_without_deleted(id , data , fullWeek = False):
     try:
         types_ = ['(ПР)', '(А)' , '(ЛК)' , "(КТ)" , "(КС)"]
@@ -129,13 +115,9 @@ def get_schedule_week(title, schedule_data):
             max_lines = max(max_lines, count)
         height = max(MIN_ROW_HEIGHT, max_lines * line_height + 2 * padding)
         row_heights.append(height)
-
-    # === РИСУЕМ ЗАГОЛОВОК ===
     title_bbox = draw.textbbox((0, 0), TITLE, font=title_font)
     title_w = title_bbox[2] - title_bbox[0]
     draw.text(((WIDTH - title_w) // 2, 80), TITLE, font=title_font, fill=TEXT_COLOR)
-
-    # === РИСУЕМ ТАБЛИЦУ ===
     y = table_top
     for i, row_h in enumerate(row_heights):
         for j in range(cols):
@@ -143,15 +125,10 @@ def get_schedule_week(title, schedule_data):
             y1 = y
             x2 = x1 + cell_width
             y2 = y + row_h
-
-            # Сетка
             draw.rectangle([x1, y1, x2, y2], outline=GRID_COLOR, width=1)
-
             text = schedule_data[i][j].strip()
             if not text:
                 continue
-
-            # Перенос
             lines = text.split('\n')
             wrapped = []
             for line in lines:
@@ -159,8 +136,6 @@ def get_schedule_week(title, schedule_data):
                     wrapped.extend(textwrap.wrap(line, width=int((cell_width - 2 * padding) / (CELL_FONT_SIZE * 0.52))))
                 else:
                     wrapped.append(line)
-
-            # Вертикальное центрирование
             total_h = len(wrapped) * line_height
             start_y = y1 + (row_h - total_h) // 2
 
@@ -322,8 +297,6 @@ def webside(day_index = 5 , group = "4А52"  , school = 'ИШНПТ' , course = 
         if True:
             if wId:
                 dataspec = get_pairs_without_deleted(id , dataspec)
-        # except Exception as e:
-        #     print('ошибочка ')
         count = 0
         to_return = '' + "Специальность : " + speciality + '.'  + '\n' + daysOfWeek[day_index] + '\n'
         text = ''

@@ -1,9 +1,7 @@
 import sqlite3 as sql
 import time
 
-# from colorama import Fore
-import os
-#id username course school group sub 
+
 stPatch = './db/info.db'
 def r(text):
     # print(f'{Fore.RED} {text}{Fore.RESET}')
@@ -307,6 +305,3 @@ def fixFriendsIds(id):
         print(e)
 if __name__ == '__main__':
     makeDb()
-    # print(checkUserSub(873729188))
-    # for i in range(10):
-    #     update_users(873729188)
