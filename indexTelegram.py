@@ -61,7 +61,6 @@ def ping_telegram_api():
 
 
 apihelper.WRITE_TIMEOUT = 120
-makeDb()
 donate_link = 'https://dalink.to/medisssa'
 print(entry_art)
 if not os.path.exists("./log.txt"):
