@@ -860,10 +860,11 @@ def telegramSide():
     
 
 def distributionSide():
+    freakin_error = "session not created: probably user data directory is already in use, please specify a unique value for --user-data-dir argument, or don't use --user-data-dir; For documentation on this error, please visit"
     while True:
         try:
             current_day = datetime.datetime.now().day
-            if DateManager(datenow= current_day + 1):
+            if DateManager(datenow= current_day):
                 bot.send_message(loggerChat , f'Уникальных юзеров: {get_unique()} , юзеров : {get_usersUse()}')
                 clearUsers()
                 users = getAllSubscribedUsers()
@@ -895,6 +896,8 @@ def distributionSide():
                             if str(e).lower() == 'A request to the Telegram API was unsuccessful. Error code: 403. Description: Forbidden: bot was blocked by the user'.lower():
                                 deleteUser(user)
                             send_to_logger(e , user)
+                            if freakin_error.lower() in (str(e).lower()):
+                                pass
                     send_to_logger(t , justInfo = True)
             time.sleep(60 * checkFrequency)
         except Exception as e:
